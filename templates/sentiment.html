@@ -1,0 +1,107 @@
+{% extends 'index.html' %}
+{% block title %}Sentiment Analysis{% endblock title %}
+{% block body %}
+<head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <section class="newsletter-subscribe">
+    <br><br>
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">Sentiment Analysis of YouTube Videos</h2><br>
+            </div>
+            <form class="d-flex justify-content-center flex-wrap" method="post">
+                <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
+                <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Go </button></div>
+            </form>
+        </div>
+        <br>
+    </section>
+<div class="container justify-content-center">
+<canvas id="myChart" width="200" height="60"></canvas>
+</div>
+    <script>
+    
+    var xlabels=[];
+    var ydegree=[];   
+    myChart=[];
+    chartIt();
+    getData();
+  
+
+    async function chartIt(){
+        await getData();
+        const ctx = document.getElementById('myChart').getContext('2d');
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: xlabels,
+                datasets: [{
+                    label: 'Sentiment',
+                    data: ydegree,
+                    backgroundColor: [
+                        'rgba(182, 182, 116, 1)',
+                        'rgba(109, 107, 156, 1)',
+                        'rgba(150, 107, 156, 1)',
+                        'rgba(156, 107, 107, 1)',
+                        'rgba(116, 145, 100, 1)',
+                        'rgba(100, 145, 144, 1)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        }
+    
+
+
+        async function getData(){
+            const response=await fetch('/static/csv/two.csv');
+            const data= await response.text();
+
+
+            const table = data.split('\n').slice(1);
+            table.forEach (row => {
+                const columns =row.split(',');
+                const emotion=columns[0];
+                xlabels.push(emotion);
+                const degree=columns[1];
+                ydegree.push(degree);
+                console.log(emotion,degree);
+            });
+        }
+       function doUpdate(json_input){
+           xlabels=json_input.xlabels;
+           ydegree=json_input.ydegree;
+           myChart.data.datasets[0].data = ydegree;
+           myChart.data.labels = xlabels;
+           myChart.update();
+       }
+ setInterval(function(){
+    $.ajax({
+        url:'/AutoUpdate',
+      
+        success: doUpdate
+    });
+}, 1000);
+    </script>
+</body>
+{% endblock body %}

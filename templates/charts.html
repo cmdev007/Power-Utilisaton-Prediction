@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+
+<script>
+{% block jquery %}
+var endpoint = 'get_data'
+
+$.ajax({
+    method:'GET',
+    url:endpoint,
+    success: function(data){
+        console.log(data)
+    },
+})
+{% endblock jquery %}
+</script>
+
+
+
+{% block title %}chart{% endblock title %}
+{% block body %}
+<div url-endpoint='{% url "get_data" %}'>
+<h1> hello chart</h1>
+</div>
+{% endblock body %}
