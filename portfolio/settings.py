@@ -30,9 +30,9 @@ f.close()
 SECRET_KEY = SKEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["power-daiict.tuxforums.com"]
+ALLOWED_HOSTS = ["power-daiict.tuxforums.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
