@@ -1,0 +1,4 @@
+ffmpeg
+youtube-dl
+pv
+translate-shell

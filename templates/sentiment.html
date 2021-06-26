@@ -3,59 +3,69 @@
 {% block body %}
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
 </head>
 <body>
     <section class="newsletter-subscribe">
     <br><br>
         <div class="container">
             <div class="intro">
-                <h2 class="text-center">Sentiment Analysis of YouTube Videos</h2><br>
+                <h2 class="text-center">Sentiment Analysis</h2>
             </div>
-            <form class="d-flex justify-content-center flex-wrap" method="post">
+            <br>
+            <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidOpener">
+                {% csrf_token %}
                 <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
                 <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Go </button></div>
             </form>
         </div>
         <br>
     </section>
-<div class="container justify-content-center">
-<canvas id="myChart" width="200" height="60"></canvas>
-</div>
+    <div class="container justify-content-center">
+        <canvas id="myChart" width="200" height="60"></canvas>
+    </div>
+    <div class="container justify-content-center">
+        <canvas id="myChartBar" width="200" height="60"></canvas>
+    </div>
     <script>
     
     var xlabels=[];
-    var ydegree=[];   
+    var ydegree=[];
+    var xlabelsBar=[];
+    var anger=[];
+    var disgust=[];
+    var fear=[];
+    var joy=[];
+    var sadness=[];
     myChart=[];
+    myChartBar=[];
     chartIt();
-    getData();
+    chartItBar();
+    // getData();
   
 
-    async function chartIt(){
-        await getData();
-        const ctx = document.getElementById('myChart').getContext('2d');
-        myChart = new Chart(ctx, {
+    async function chartItBar(){
+        // await getData();
+        const ctxBar = document.getElementById('myChartBar').getContext('2d');
+        myChartBar = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: xlabels,
+                labels: xlabelsBar,
                 datasets: [{
                     label: 'Sentiment',
                     data: ydegree,
                     backgroundColor: [
-                        'rgba(182, 182, 116, 1)',
-                        'rgba(109, 107, 156, 1)',
-                        'rgba(150, 107, 156, 1)',
-                        'rgba(156, 107, 107, 1)',
-                        'rgba(116, 145, 100, 1)',
-                        'rgba(100, 145, 144, 1)'
+                    'rgb(218, 86, 72)',
+                    'rgb(54, 162, 235)',
+                    'rgb(167, 105, 218)',
+                    'rgb(135, 255, 108)',
+                    'rgb(206, 193, 97)'
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
+                    'rgb(218, 86, 72)',
+                    'rgb(54, 162, 235)',
+                    'rgb(167, 105, 218)',
+                    'rgb(135, 255, 108)',
+                    'rgb(206, 193, 97)'
                     ],
                     borderWidth: 1
                 }]
@@ -71,6 +81,47 @@
         
         }
     
+    async function chartIt(){
+        const ctx = document.getElementById('myChart').getContext('2d');
+        myChart = new Chart(ctx, {
+            data: {
+                datasets: [{
+                    type: 'line',
+                    label: 'Anger',
+                    data: anger,
+                    borderColor: 'rgb(218, 86, 72)'
+                }, {
+                    type: 'line',
+                    label: 'Disgust',
+                    data: disgust,
+                    borderColor: 'rgb(54, 162, 235)'
+                }, {
+                    type: 'line',
+                    label: 'Fear',
+                    data: fear,
+                    borderColor: 'rgb(167, 105, 218)'
+                }, {
+                    type: 'line',
+                    label: 'Joy',
+                    data: joy,
+                    borderColor: 'rgb(135, 255, 108)'
+                }, {
+                    type: 'line',
+                    label: 'Sadness',
+                    data: sadness,
+                    borderColor: 'rgb(206, 193, 97)'
+                }],
+                labels: xlabels
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+         });
+    }
 
 
         async function getData(){
@@ -89,16 +140,22 @@
             });
         }
        function doUpdate(json_input){
-           xlabels=json_input.xlabels;
-           ydegree=json_input.ydegree;
-           myChart.data.datasets[0].data = ydegree;
-           myChart.data.labels = xlabels;
+        //    xlabels=json_input.xlabels;
+        //    ydegree=json_input.ydegree;
+           myChart.data.datasets[0].data = json_input.anger;
+           myChart.data.datasets[1].data = json_input.disgust;
+           myChart.data.datasets[2].data = json_input.fear;
+           myChart.data.datasets[3].data = json_input.joy;
+           myChart.data.datasets[4].data = json_input.sadness;
+           myChart.data.labels = json_input.xlabels;
+           myChartBar.data.labels = ["Anger", "Disgust", "Fear", "Joy", "Sadness"];
+           myChartBar.data.datasets[0].data = [json_input.anger.slice(-1)[0], json_input.disgust.slice(-1)[0], json_input.fear.slice(-1)[0], json_input.joy.slice(-1)[0], json_input.sadness.slice(-1)[0]];
            myChart.update();
+           myChartBar.update();
        }
  setInterval(function(){
     $.ajax({
         url:'/AutoUpdate',
-      
         success: doUpdate
     });
 }, 1000);

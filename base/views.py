@@ -1,7 +1,10 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.core.exceptions import *
 import pandas as pd
+import os
+import time
 # Create your views here.
 
 def index(request):
@@ -22,6 +25,15 @@ def sentiment(request):
 def stock(request):
     return render (request, 'stock.html');
 
+def login(request):
+    return render (request, 'login.html');
+
+def register(request):
+    return render (request, 'register.html');
+
+def forgot(request):
+    return render (request, 'forgot.html');
+
 def charts(request):
     return render (request, 'charts.html');
 
@@ -33,11 +45,46 @@ def get_data(request,*args,**kwargs):
     return JsonResponse(data)
 
 def AutoUpdate(request):
-    df = pd.read_csv("static/csv/two.csv", header=0)
+    
+    try:
+        df = pd.read_csv(f"./backend/{session}/sentData.csv", header=0, index_col=0)
 
-    context = {
-                "xlabels" : [i for i in df["emotion"]],
-                "ydegree" : [i for i in df["degree"]]
+        context = {
+                    "xlabels" : [i for i in df.index],
+                    "anger" : [i for i in df["anger"]],
+                    "disgust" : [i for i in df["disgust"]],
+                    "fear" : [i for i in df["fear"]],
+                    "joy" : [i for i in df["joy"]],
+                    "sadness" : [i for i in df["sadness"]]
+                }
+    except:
+        context = {
+                    "xlabels" : [],
+                    "anger" : [],
+                    "disgust" : [],
+                    "fear" : [],
+                    "joy" : [],
+                    "sadness" : []
+                }
 
-    }
     return JsonResponse(context)
+
+def PidOpener(request):
+    global session
+    session = int(time.time())
+    os.mkdir(f"./backend/{session}")
+    link = request.POST.get('link', None)
+    buff = {'anger' : 0,
+            'disgust' : 0,
+            'fear' : 0,
+            'joy' : 0,
+            'sadness' : 0}
+    
+    file1 = open(f"./backend/{session}/sentData.csv","w")#write mode
+    file1.write("emotion,degree\n")
+    for i in buff:
+        file1.write(f"{i.capitalize()},{buff[i]}\n")
+    file1.close()
+
+    os.system(f"./backend/start-vsm-ensemble.sh '{link}' '{session}'&")
+    return render(request, 'sentiment.html')
