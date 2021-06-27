@@ -5,6 +5,8 @@ from django.core.exceptions import *
 import pandas as pd
 import os
 import time
+import random
+
 # Create your views here.
 
 def index(request):
@@ -47,7 +49,11 @@ def get_data(request,*args,**kwargs):
 def AutoUpdate(request):
     try:
         if "SENT.lock" in os.listdir(f"./backend/{session}"):
-            LOCK = "Processing Video..."
+            emogi = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '🥲', '☺️', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥸', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠']
+            LOCK = "Processing Video"
+            sEmogi = random.choices(emogi,k=int((time.time()-session)%4)*2)
+            sEmogi = "".join(sEmogi)
+            LOCK = f"{sEmogi[0:int(len(sEmogi)/2)]}{LOCK}{sEmogi[int(len(sEmogi)/2):len(sEmogi)]}"
         else:
             LOCK = "Processing Finished!"
     except:
