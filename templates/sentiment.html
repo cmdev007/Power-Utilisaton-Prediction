@@ -3,6 +3,13 @@
 {% block body %}
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<style>
+    .wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 </head>
 <body>
     <section class="newsletter-subscribe">
@@ -18,6 +25,16 @@
                 <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Go </button></div>
             </form>
         </div>
+
+        <div class="wrapper">
+<div class="card-sm bg-dark text-white rounded" >
+<h5 class="card-title text-center">
+<div class="container justify-content-center">
+<a><span class="badge sentData"></span></a> 
+</div>
+</h5>
+</div>
+</div>
         <br>
     </section>
     <div class="container justify-content-center">
@@ -152,7 +169,13 @@
            myChartBar.data.datasets[0].data = [json_input.anger.slice(-1)[0], json_input.disgust.slice(-1)[0], json_input.fear.slice(-1)[0], json_input.joy.slice(-1)[0], json_input.sadness.slice(-1)[0]];
            myChart.update();
            myChartBar.update();
+           $(document).ready(function() {
+            var sentData = json_input.sentdata;
+            $(".sentData").html(sentData);
+            
+            });
        }
+
  setInterval(function(){
     $.ajax({
         url:'/AutoUpdate',
