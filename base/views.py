@@ -45,11 +45,14 @@ def get_data(request,*args,**kwargs):
     return JsonResponse(data)
 
 def AutoUpdate(request):
-    if "SENT.lock" in os.listdir("./backend"):
-        LOCK = "Processing Video..."
-    else:
-        LOCK = "Processing Finished!"
-        
+    try:
+        if "SENT.lock" in os.listdir(f"./backend/{session}"):
+            LOCK = "Processing Video..."
+        else:
+            LOCK = "Processing Finished!"
+    except:
+        LOCK = "Ready to Process"
+    
     try:
         df = pd.read_csv(f"./backend/{session}/sentData.csv", header=0, index_col=0)
 
@@ -79,6 +82,7 @@ def PidOpener(request):
     global session
     session = int(time.time())
     os.mkdir(f"./backend/{session}")
+    os.system(f"touch ./backend/{session}/SENT.lock")
     link = request.POST.get('link', None)
     buff = {'anger' : 0,
             'disgust' : 0,

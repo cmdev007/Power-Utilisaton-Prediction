@@ -1,8 +1,8 @@
 #!/bin/python
 
-import speech_recognition as sr
 import sys
 import os
+import speech_recognition as sr
 import numpy as np
 import pandas as pd
 import nltk
@@ -143,16 +143,16 @@ def EnsemblE(sent):
         print("EmowavE is not sure this time though!")
     return sureFLAG, method, Emo
 
-os.system("touch ./backend/SENT.lock")
 
 header = sys.stdin.buffer.read(78)
 while(1):
-    #data = sys.stdin.buffer.read(882000) #5 sec
-    data = sys.stdin.buffer.read(5292000) #30 sec
+    # data = sys.stdin.buffer.read(882000) #5 sec
+    # data = sys.stdin.buffer.read(5292000) #30 sec
+    data = sys.stdin.buffer.read(2646000)
     if data == b'':
         os.system("rm -rf /tmp/inter.wav")
         os.system("rm -rf /tmp/inter_f.wav")
-        os.system("rm ./backend/SENT.lock")
+        os.system(f"rm ./backend/{session}/SENT.lock")
         break
     f = open("/tmp/inter.wav", "wb")
     f.write(header)
@@ -176,12 +176,6 @@ while(1):
         df.loc[dfCounter] = [EmoCount[i] for i in EmoCount]
         dfCounter+=1
         df.to_csv(f"./backend/{session}/sentData.csv")
-        # file1 = open(f"./backend/{session}/sentData.csv","a")#append mode
-        #file1.write(Data+" | Emotion: "+EmowavE(Data)+"\n")
-        # file1.write("emotion,degree\n")
-        # for i in EmoCount:
-        #     file1.write(f"{i},{EmoCount[i]}\n")
-        # file1.close()
         print("#######################################################################################")
         print("The audio file contains: " + Data)
 
