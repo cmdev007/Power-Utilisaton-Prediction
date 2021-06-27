@@ -143,6 +143,7 @@ def EnsemblE(sent):
         print("EmowavE is not sure this time though!")
     return sureFLAG, method, Emo
 
+os.system("touch ./backend/SENT.lock")
 
 header = sys.stdin.buffer.read(78)
 while(1):
@@ -151,6 +152,7 @@ while(1):
     if data == b'':
         os.system("rm -rf /tmp/inter.wav")
         os.system("rm -rf /tmp/inter_f.wav")
+        os.system("rm ./backend/SENT.lock")
         break
     f = open("/tmp/inter.wav", "wb")
     f.write(header)

@@ -45,7 +45,11 @@ def get_data(request,*args,**kwargs):
     return JsonResponse(data)
 
 def AutoUpdate(request):
-    
+    if "SENT.lock" in os.listdir("./backend"):
+        LOCK = "Processing Video..."
+    else:
+        LOCK = "Processing Finished!"
+        
     try:
         df = pd.read_csv(f"./backend/{session}/sentData.csv", header=0, index_col=0)
 
@@ -55,7 +59,8 @@ def AutoUpdate(request):
                     "disgust" : [i for i in df["disgust"]],
                     "fear" : [i for i in df["fear"]],
                     "joy" : [i for i in df["joy"]],
-                    "sadness" : [i for i in df["sadness"]]
+                    "sadness" : [i for i in df["sadness"]],
+                    "sentdata" : LOCK
                 }
     except:
         context = {
@@ -64,7 +69,8 @@ def AutoUpdate(request):
                     "disgust" : [],
                     "fear" : [],
                     "joy" : [],
-                    "sadness" : []
+                    "sadness" : [],
+                    "sentdata" : LOCK
                 }
 
     return JsonResponse(context)
