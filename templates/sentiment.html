@@ -27,22 +27,33 @@
         </div>
 
         <div class="wrapper">
-<div class="card-sm bg-dark text-white rounded" >
-<h5 class="card-title text-center">
-<div class="container justify-content-center">
-<a><span class="badge sentData"></span></a> 
-</div>
-</h5>
-</div>
-</div>
+            <div class="card-sm bg-dark text-white rounded" >
+                <h5 class="card-title text-center">
+                    <div class="container justify-content-center">
+                        <a><span class="badge sentData"></span></a> 
+                    </div>
+                </h5>
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <div class="card-sm bg-dark text-white rounded" >
+                <h5 class="card-title text-center">
+                    <div class="container justify-content-center">
+                        <a><span class="badge sentTitle"></span></a> 
+                    </div>
+                </h5>
+            </div>
+        </div>
+
         <br>
     </section>
 <div class="row">
     <div class="col justify-content-center">
-        <canvas id="myChart" width="200" height="100"></canvas>
+        <canvas id="myChart" width="200" height="80"></canvas>
     </div>
     <div class="col justify-content-center">
-        <canvas id="myChartBar" width="200" height="100"></canvas>
+        <canvas id="myChartBar" width="200" height="80"></canvas>
     </div>
 </div>
     <script>
@@ -174,7 +185,8 @@
            $(document).ready(function() {
             var sentData = json_input.sentdata;
             $(".sentData").html(sentData);
-            
+            var sentTitle = json_input.title;
+            $(".sentTitle").html(sentTitle);
             });
        }
 
