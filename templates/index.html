@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="icon" href="static/img/fidgetlogo.png">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,14 +9,27 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
-    <title>{% block title%}{% endblock title%} | Project Portfolio</title>
+    <title>{% block title%}{% endblock title%} | Project Fidget</title>
+    <style>
+    .footer {
+  background-color: rgba(33,37,41,1);
+  position:fixed;
+   bottom:0;
+   width:100%;
+   height:30px; 
+   color:white;  /* Height of the footer */
+}
+
+
+
+    </style>
   </head>
   <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">Portfolio</a>
+    <a class="navbar-brand" href="/"><img src="static/img/fidget.png" height="40px"></img></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -54,4 +68,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
     -->
   </body>
+  <!-- Footer -->
+<footer class="text-center footer text-faded py-1" >
+    <div class="container">
+        <p class="m-0 small">Made with ❤️ in <a href="http://irlab.daiict.ac.in/" style="color:white">IRLAB-DAIICT</a></p>
+    </div>
+</footer>
+<!-- Footer -->
 </html>
