@@ -1,86 +1,107 @@
 {% extends 'index.html' %}
-{% block title %}Stock Market{% endblock title %} 
+{% block title %}Stock Market{% endblock title %}
 {% block body %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <style>
-    .wrapper{
+    .wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
+
+    }
+
+    .bdr {
+        background-color: #f7deff;
+        border-radius: 1.5rem;
+    }
+
+    .bdr1 {
+        background-color: #feeee2;
+        border-radius: 1.5rem;
+    }
+
+    .card1 {
+        color: #027cfd;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .card2 {
+        color: #00821c;
+        font-weight: bold;
+        text-align: center;
     }
 </style>
 </head>
+
 <body>
-<br>
-<br>
-<div class="row">
-    <div class="col">
-        <div class="wrapper">
-        <div class="card-sm bg-dark text-white rounded">
-            <h4 class="card-title text-center">
-            <div class="d-flex flex-wrap justify-content-center mt-2">
-            <a><span class="badge hours"></span></a> :
-            <a><span class="badge min"></span></a> :
-            <a><span class="badge sec"></span></a>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="bdr1">
+                <br>
+                <div class="wrapper">
+                    <h4 class="card1">
+                        <a><span class=" hours"></span></a> :
+                        <a><span class=" min"></span></a> :
+                        <a><span class=" sec"></span></a>
+                    </h4>
+                </div>
+                <br>
+                <br>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        Current Price: <a><span class=" hours"></span></a>
+                    </h5>
+                </div>
             </div>
-            </h4>
         </div>
-        </div>
-        <br>
-        <br>
-        <div class="container rounded m-2">
-        <div class="wrapper">
-        <div class="card-sm bg-dark text-white rounded p-2">
-        <h5 class="card-title text-center">
-        <div class="d-flex flex-wrap justify-content-center mt-2">
-        Current Price: <a><span class="badge hours"></span></a>
-        </div>
-        </h5>
-        </div>
-        </div>
+
+        <div class="col">
+            <div class="bdr">
+                <br>
+                <div class="wrapper">
+
+                    <h4 class="card1">
+                        <a><span class=" hours"></span></a> :
+                        <a><span class=" min1"></span></a> :
+                        <a><span class=" sec"></span></a>
+                    </h4>
+                </div>
+
+                <div class="wrapper">
+                    <img src="/static/img/uparrow.png" style="height:300px;" />
+                    <img src="/static/img/downarrow.png" style="height:300px;" />
+                </div>
+
+            </div>
         </div>
     </div>
-    <div class="col">
-        <div class="wrapper">
-        <div class="card-sm bg-dark text-white rounded">
-            <h4 class="card-title text-center">
-            <div class="d-flex flex-wrap justify-content-center mt-2">
-            <a><span class="badge hours"></span></a> :
-            <a><span class="badge min1"></span></a> :
-            <a><span class="badge sec"></span></a>
-            </div>
-            </h4>
-        </div>
-        </div>
-         <div class="wrapper">
-        <img src="/static/img/uparrow.png" style="height:300px;" />
-        <img src="/static/img/downarrow.png" style="height:300px;" />
-        </div>
-    </div>
-</div>
 
 
-<script>
-$(document).ready(function() {
-setInterval( function() {
-var hours = new Date().getHours();
-$(".hours").html(( hours < 10 ? "0" : "" ) + hours);
-}, 1000);
-setInterval( function() {
-var minutes = new Date().getMinutes();
-$(".min").html(( minutes < 10 ? "0" : "" ) + minutes);
-},1000);
-setInterval( function() {
-var seconds = new Date().getSeconds();
-$(".sec").html(( seconds < 10 ? "0" : "" ) + seconds);
-},1000);
-});
-setInterval( function() {
-var minutes1 = new Date().getMinutes()+3;
-$(".min1").html(( minutes1 < 10 ? "0" : "" ) + minutes1);
-},1000);
-</script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                var hours = new Date().getHours();
+                $(".hours").html((hours < 10 ? "0" : "") + hours);
+            }, 1000);
+            setInterval(function () {
+                var minutes = new Date().getMinutes();
+                $(".min").html((minutes < 10 ? "0" : "") + minutes);
+            }, 1000);
+            setInterval(function () {
+                var seconds = new Date().getSeconds();
+                $(".sec").html((seconds < 10 ? "0" : "") + seconds);
+            }, 1000);
+        });
+        setInterval(function () {
+            var minutes1 = new Date().getMinutes() + 3;
+            $(".min1").html((minutes1 < 10 ? "0" : "") + minutes1);
+        }, 1000);
+    </script>
 </body>
 
 {% endblock body %}
