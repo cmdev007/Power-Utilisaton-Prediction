@@ -13,12 +13,21 @@
 </head>
 <body>
     <section class="newsletter-subscribe">
-    <br>
         <div class="container">
             <div class="intro">
                 <h2 class="text-center">Sentiment Analysis</h2>
             </div>
             <br>
+            <div class="wrapper">
+            <div class="card-sm bg-dark text-white rounded" >
+                <h5>
+                    <div class="container justify-content-center">
+                        <a><span class="badge sentTitle"></span></a> 
+                    </div>
+                </h5>
+            </div>
+        </div>
+        <br><br>
             <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidOpener">
                 {% csrf_token %}
                 <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
@@ -26,25 +35,16 @@
             </form>
             <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidCloser">
                 {% csrf_token %}
-                <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Stop </button></div>
+                <div class="mb-3"><button class="btn btn-danger" type="submit" >Stop </button></div>
             </form>
         </div>
+       
 
         <div class="wrapper">
             <div class="card-sm bg-dark text-white rounded" >
                 <h5 class="card-title text-center">
                     <div class="container justify-content-center">
                         <a><span class="badge sentData"></span></a> 
-                    </div>
-                </h5>
-            </div>
-        </div>
-
-        <div class="wrapper">
-            <div class="card-sm bg-dark text-white rounded" >
-                <h5 class="card-title text-center">
-                    <div class="container justify-content-center">
-                        <a><span class="badge sentTitle"></span></a> 
                     </div>
                 </h5>
             </div>
