@@ -55,17 +55,21 @@ def AutoUpdate(request):
             sEmogi = random.choices(emogi,k=int((time.time()-session)%4)*2)
             sEmogi = "".join(sEmogi)
             LOCK = f"{sEmogi[0:int(len(sEmogi)/2)]}{LOCK}{sEmogi[int(len(sEmogi)/2):len(sEmogi)]}"
-            f = open(f"./backend/{session}/TITLE.txt")
-            TITLE = f.read()
-            tlist = TITLE.strip().split("-")
-            tlist.pop()
-            TITLE = "-".join(tlist)
-            f.close()
         else:
             LOCK = "Processing Finished!"
     except:
         LOCK = "Ready to Process"
     
+    try:
+        f = open(f"./backend/{session}/TITLE.txt")
+        TITLE = f.read()
+        tlist = TITLE.strip().split("-")
+        tlist.pop()
+        TITLE = "-".join(tlist)
+        f.close()
+    except:
+        pass
+
     try:
         df = pd.read_csv(f"./backend/{session}/sentData.csv", header=0, index_col=0)
 
