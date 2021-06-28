@@ -9,6 +9,7 @@
         justify-content: center;
         align-items: center;
     }
+  
 </style>
 </head>
 <body>
@@ -28,15 +29,22 @@
             </div>
         </div>
         <br>
+        <div class="row">
+            <div class="col-xs-6 col-md-4">
+            </div>
+            <div class="col-xs-6 col-md-4">
             <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidOpener">
                 {% csrf_token %}
                 <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
-                <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Go </button></div>
+                <div class="mb-3" style="margin-left:10px;"><button class="btn btn-success" type="submit">Go </button></div>
             </form>
-            <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidCloser">
+            </div>
+            <div class="col-xs-6 col-md-4">
+            <form class="d-flex  flex-wrap" method="post" action="/PidCloser">
                 {% csrf_token %}
-                <div class="mb-3"><button class="btn btn-danger" type="submit" >Stop </button></div>
+                <div class="mb-3"style="margin-left:-30px;" ><button class="btn btn-danger" type="submit" >Stop </button></div>
             </form>
+            </div>
         </div>
        
 
@@ -49,15 +57,22 @@
                 </h5>
             </div>
         </div>
+        </div>
 
         <br>
     </section>
 <div class="row">
-    <div class="col justify-content-center">
-        <canvas id="myChart" width="200" height="80"></canvas>
+    
+    <div class=" col-sm-6">
+    <div class="container container-fluid">
+        <canvas id="myChart"></canvas>
     </div>
-    <div class="col justify-content-center">
-        <canvas id="myChartBar" width="200" height="80"></canvas>
+    </div>
+    
+    <div class="col-sm-6">
+    <div class="container container-fluid">
+        <canvas id="myChartBar"></canvas>
+    </div>
     </div>
 </div>
     <script>
