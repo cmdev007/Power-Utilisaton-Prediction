@@ -1,6 +1,19 @@
 {% extends 'index.html' %}
 {% block title %}About Us{% endblock title %}
 {% block body %}
+<head>
+  <style>
+    .footer {
+      background-color: rgba(33, 37, 41, 1);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 30px;
+      color: white;
+      /* Height of the footer */
+    }
+  </style>
+</head>
 <body>
       <section>
     <br>
@@ -78,5 +91,10 @@
     </section>
 </body>
 </body>
+<footer class="text-center footer text-faded py-1">
+  <div class="container">
+    <p class="m-0 small">Made with ❤️ in <a href="http://irlab.daiict.ac.in/" style="color:white">IRLAB-DAIICT</a></p>
+  </div>
+</footer>
 
 {% endblock body %}
