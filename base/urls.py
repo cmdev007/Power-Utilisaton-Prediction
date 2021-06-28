@@ -18,5 +18,6 @@ urlpatterns = [
     path('get_data',views.get_data,name='get_data'),
     path('charts',views.charts,name='charts'),
     path('AutoUpdate',views.AutoUpdate,name='AutoUpdate'),
-    path('PidOpener',views.PidOpener,name='PidOpener')
+    path('PidOpener',views.PidOpener,name='PidOpener'),
+    path('PidCloser',views.PidCloser,name='PidCloser')
 ]

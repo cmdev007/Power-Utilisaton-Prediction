@@ -117,3 +117,11 @@ def PidOpener(request):
 
     os.system(f"./backend/start-vsm-ensemble.sh '{link}' '{session}'&")
     return render(request, 'sentiment.html')
+
+def PidCloser(request):
+    f = os.popen("ps -ef | awk '$NF~'"+str(session)+"' {print $2}'")
+    PIDs = f.read()
+    for i in PIDs.split():
+        os.system(f"kill {i}")
+    os.system(f"rm  ./backend/{session}/SENT.lock")
+    return render(request, 'sentiment.html')
