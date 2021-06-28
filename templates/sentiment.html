@@ -9,7 +9,49 @@
         justify-content: center;
         align-items: center;
     }
+.btn1 {
+  background-color: #a1e3a6;
+  border-color: #088c16;
+  color: #088c16;
+  text-align: center;
+  font-weight: bold;
+  opacity: 0.6;
+  margin-left:20px;
+  transition: 0.3s;
+  padding:7px 12px;
+  border-radius:0.5rem;
+}
+
+.btn:hover {opacity: 1}
+
+.btn2 {
+  background-color: #ebbbb9;
+  border-color:#fe063a;
+  color: #fe063a;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0.6;
+  transition: 0.3s;
+ margin-left:-30px;  
+  padding:7px;
+  border-radius:0.5rem;
+
+}
+
+.btn1:hover {opacity: 1}
   
+.card1{
+  background-color: #e3e1f3;
+  color: #3f3a9d;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0.6;
+  transition: 0.3s;
+  padding:7px;
+  border-radius:0.5rem;
+}
+.card1:hover {opacity: 1}
+
 </style>
 </head>
 <body>
@@ -36,26 +78,24 @@
             <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidOpener">
                 {% csrf_token %}
                 <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
-                <div class="mb-3" style="margin-left:10px;"><button class="btn btn-success" type="submit">Go </button></div>
+                <div class="mb-3" style="margin-left:10px;"><button class="btn1 btn-success" type="submit"> Go </button></div>
             </form>
             </div>
             <div class="col-xs-6 col-md-4">
             <form class="d-flex  flex-wrap" method="post" action="/PidCloser">
                 {% csrf_token %}
-                <div class="mb-3"style="margin-left:-30px;" ><button class="btn btn-danger" type="submit" >Stop </button></div>
+                <div class="mb-3" ><button class="btn2 btn-danger" type="submit" >Stop</button></div>
             </form>
             </div>
         </div>
        
 
         <div class="wrapper">
-            <div class="card-sm bg-dark text-white rounded" >
-                <h5 class="card-title text-center">
+                <h5 class="card1 card-title text-center">
                     <div class="container justify-content-center">
-                        <a><span class="badge sentData"></span></a> 
+                        <a><span class="sentData"></span></a> 
                     </div>
                 </h5>
-            </div>
         </div>
         </div>
 
