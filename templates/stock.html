@@ -4,62 +4,63 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <style>
-body{
-background: #C9D6FF;
-background: -webkit-linear-gradient(to right, #E2E2E2, #C9D6FF);
-background: linear-gradient(to right, #E2E2E2, #C9D6FF);
-}
+    .wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 </head>
 <body>
 <br>
 <br>
+<div class="row">
+    <div class="col">
+        <div class="wrapper">
+        <div class="card-sm bg-dark text-white rounded">
+            <h4 class="card-title text-center">
+            <div class="d-flex flex-wrap justify-content-center mt-2">
+            <a><span class="badge hours"></span></a> :
+            <a><span class="badge min"></span></a> :
+            <a><span class="badge sec"></span></a>
+            </div>
+            </h4>
+        </div>
+        </div>
+        <br>
+        <br>
+        <div class="container rounded m-2">
+        <div class="wrapper">
+        <div class="card-sm bg-dark text-white rounded p-2">
+        <h5 class="card-title text-center">
+        <div class="d-flex flex-wrap justify-content-center mt-2">
+        Current Price: <a><span class="badge hours"></span></a>
+        </div>
+        </h5>
+        </div>
+        </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="wrapper">
+        <div class="card-sm bg-dark text-white rounded">
+            <h4 class="card-title text-center">
+            <div class="d-flex flex-wrap justify-content-center mt-2">
+            <a><span class="badge hours"></span></a> :
+            <a><span class="badge min1"></span></a> :
+            <a><span class="badge sec"></span></a>
+            </div>
+            </h4>
+        </div>
+        </div>
+         <div class="wrapper">
+        <img src="/static/img/uparrow.png" style="height:300px;" />
+        <img src="/static/img/downarrow.png" style="height:300px;" />
+        </div>
+    </div>
+</div>
 
-<!-- flexbox clock row --><div class="row">
 
-<div class="col-md-3 rounded">
-<div class="card-sm bg-dark text-white rounded">
-<h4 class="card-title text-center">
-<div class="d-flex flex-wrap justify-content-center mt-2">
-<a><span class="badge hours"></span></a> :
-<a><span class="badge min"></span></a> :
-<a><span class="badge sec"></span></a>
-</div>
-</h4>
-</div>
-</div>
-<div class="col-md-3">
-</div>
-<div class="col-md-3">
-</div>
-
-<div class="col-md-3">
-<div class="card-sm bg-dark text-white rounded">
-<h4 class="card-title text-center">
-<div class="d-flex flex-wrap justify-content-center mt-2">
-<a><span class="badge hours"></span></a> :
-<a><span class="badge min1"></span></a> :
-<a><span class="badge sec"></span></a>
-</div>
-</h4>
-</div>
-</div>
-<br>
-<br>
-<br>
-<br>
-<!-- flexbox clock row --><div class="row">
-
-<div class="container" >
-<img src="/static/img/uparrow.png" style="height:160px;"align="right" />
-</div>
-</div>
-<!-- flexbox clock row --><div class="row">
-
-<div class="container " >
-<img src="/static/img/downarrow.png" style="height:160px;"align="right" />
-</div>
-</div>
 <script>
 $(document).ready(function() {
 setInterval( function() {
@@ -80,7 +81,6 @@ var minutes1 = new Date().getMinutes()+3;
 $(".min1").html(( minutes1 < 10 ? "0" : "" ) + minutes1);
 },1000);
 </script>
-
-<body>
+</body>
 
 {% endblock body %}
