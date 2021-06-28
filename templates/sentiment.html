@@ -24,6 +24,10 @@
                 <div class="mb-3"><input size=30 type="link" class="form-control" name="link" placeholder="Enter Video Link" /></div>
                 <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Go </button></div>
             </form>
+            <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidCloser">
+                {% csrf_token %}
+                <div class="mb-3"><button class="btn btn-primary" type="submit" style="background: var(--bs-gray-dark);color: var(--bs-white);border-color: var(--bs-purple);">Stop </button></div>
+            </form>
         </div>
 
         <div class="wrapper">
