@@ -1,7 +1,114 @@
 {% extends 'index.html' %}
 {% block title %}Electricity Consumption{% endblock title %}
 {% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-this is Electricity Consumption Prediction Project 
+    }
+
+    .bdr {
+        background-color: #f7deff;
+        border-radius: 1.5rem;
+    }
+
+    .bdr1 {
+        background-color: #feeee2;
+        border-radius: 1.5rem;
+    }
+
+    .card1 {
+        color: #027cfd;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .card2 {
+        color: #00821c;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+</head>
+
+<body>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="bdr1">
+                <br>
+                <div class="wrapper">
+                    <h4 class="card1">
+                        <a><span class=" day"></span></a> -
+                        <a><span class=" month"></span></a> -
+                        <a><span class=" year"></span></a>
+                    </h4>
+                </div>
+                <br>
+                <div class="wrapper">
+                <canvas id="powerChart"></canvas>
+                </div>
+                <br>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        Yesterday's Power Consumption: <a><span class=" day"></span></a>
+                    </h5>
+                </div>
+                     <br>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="bdr">
+                <br>
+                <div class="wrapper">
+
+                    <h4 class="card1">
+                        <a><span class=" day1"></span></a> -
+                        <a><span class=" month1"></span></a> -
+                        <a><span class=" year1"></span></a>
+                    </h4>
+                </div>
+
+                <div class="wrapper">
+                    <img src="/static/img/uparrow.png" style="height:300px;" />
+                    <img src="/static/img/downarrow.png" style="height:300px;" />
+                </div>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        Predicted Power Consumption: <a><span class=" day"></span></a>
+                    </h5>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                var day = new Date().getDate();
+                $(".day").html((day < 10 ? "0" : "") + day);
+                var month = new Date().getMonth();
+                $(".month").html((month < 10 ? "0" : "") + month);
+                var year = new Date().getFullYear();
+                $(".year").html((year < 10 ? "0" : "") + year);
+
+                var day1 = new Date(+ new Date()+86400000).getDate();
+                $(".day1").html((day1 < 10 ? "0" : "") + day1);
+                var month1 = new Date(+ new Date()+86400000).getMonth();
+                $(".month1").html((month1 < 10 ? "0" : "") + month1);
+                var year1 = new Date(+ new Date()+86400000).getFullYear();
+                $(".year1").html((year1 < 10 ? "0" : "") + year1);
+            }, 1000);
+            
+        });
+    </script>
+</body>
 
 {% endblock body %}
