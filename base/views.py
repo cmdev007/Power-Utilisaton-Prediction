@@ -49,7 +49,7 @@ def get_data(request,*args,**kwargs):
 def AutoUpdate(request):
     TITLE = ""
     try:
-        if "SENT.lock" in os.listdir(f"./backend/oldSessions/{session}"):
+        if "SENT.lock" in os.listdir(f"./backend/emowave/oldSessions/{session}"):
             emogi = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '🥲', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥸', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠']
             LOCK = "Processing Video"
             sEmogi = random.choices(emogi,k=int((time.time()-session)%4)*2)
@@ -61,7 +61,7 @@ def AutoUpdate(request):
         LOCK = "Ready to Process"
     
     try:
-        f = open(f"./backend/oldSessions/{session}/TITLE.txt")
+        f = open(f"./backend/emowave/oldSessions/{session}/TITLE.txt")
         TITLE = f.read()
         tlist = TITLE.strip().split("-")
         tlist.pop()
@@ -71,7 +71,7 @@ def AutoUpdate(request):
         pass
 
     try:
-        df = pd.read_csv(f"./backend/oldSessions/{session}/sentData.csv", header=0, index_col=0)
+        df = pd.read_csv(f"./backend/emowave/oldSessions/{session}/sentData.csv", header=0, index_col=0)
 
         context = {
                     "xlabels" : [i for i in df.index],
@@ -100,9 +100,9 @@ def AutoUpdate(request):
 def PidOpener(request):
     global session
     session = int(time.time())
-    os.system("rm -rf ./backend/oldSessions/*")
-    os.mkdir(f"./backend/oldSessions/{session}")
-    os.system(f"touch ./backend/oldSessions/{session}/SENT.lock")
+    os.system("rm -rf ./backend/emowave/oldSessions/*")
+    os.mkdir(f"./backend/emowave/oldSessions/{session}")
+    os.system(f"touch ./backend/emowave/oldSessions/{session}/SENT.lock")
     link = request.POST.get('link', None)
     buff = {'anger' : 0,
             'disgust' : 0,
@@ -110,13 +110,13 @@ def PidOpener(request):
             'joy' : 0,
             'sadness' : 0}
     
-    file1 = open(f"./backend/oldSessions/{session}/sentData.csv","w")#write mode
+    file1 = open(f"./backend/emowave/oldSessions/{session}/sentData.csv","w")#write mode
     file1.write("emotion,degree\n")
     for i in buff:
         file1.write(f"{i.capitalize()},{buff[i]}\n")
     file1.close()
 
-    os.system(f"./backend/start-vsm-ensemble.sh '{link}' 'oldSessions/{session}'&")
+    os.system(f"./backend/emowave/start-vsm-ensemble.sh '{link}' 'oldSessions/{session}'&")
     return render(request, 'sentiment.html')
 
 def PidCloser(request):
@@ -124,5 +124,5 @@ def PidCloser(request):
     PIDs = f.read()
     for i in PIDs.split():
         os.system(f"kill {i}")
-    os.system(f"rm  ./backend/oldSessions/{session}/SENT.lock")
+    os.system(f"rm  ./backend/emowave/oldSessions/{session}/SENT.lock")
     return render(request, 'sentiment.html')

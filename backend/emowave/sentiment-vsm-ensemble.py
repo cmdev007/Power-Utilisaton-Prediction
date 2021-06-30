@@ -64,15 +64,15 @@ def CorFilt(i):
     return ans.strip()
 
 import pickle
-f=open("./backend/EmoVec","rb")
+f=open("./backend/emowave/EmoVec","rb")
 EmoVec=pickle.load(f)
 f.close()
 
-f=open("./backend/vectorizer","rb")
+f=open("./backend/emowave/vectorizer","rb")
 vectorizer=pickle.load(f)
 f.close()
 
-model=tf.keras.models.load_model("./backend/models/")
+model=tf.keras.models.load_model("./backend/emowave/models/")
 
 
 def EmowavE(sent, vectorizer=vectorizer, EmoVec=EmoVec, trans=True):
@@ -152,7 +152,7 @@ while(1):
     if data == b'':
         os.system("rm -rf /tmp/inter.wav")
         os.system("rm -rf /tmp/inter_f.wav")
-        os.system(f"rm ./backend/{session}/SENT.lock")
+        os.system(f"rm ./backend/emowave/{session}/SENT.lock")
         break
     f = open("/tmp/inter.wav", "wb")
     f.write(header)
@@ -175,7 +175,7 @@ while(1):
         EmoCount[Emo] += 1
         df.loc[dfCounter] = [EmoCount[i] for i in EmoCount]
         dfCounter+=1
-        df.to_csv(f"./backend/{session}/sentData.csv")
+        df.to_csv(f"./backend/emowave/{session}/sentData.csv")
         print("#######################################################################################")
         print("The audio file contains: " + Data)
 
