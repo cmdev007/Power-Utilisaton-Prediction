@@ -100,6 +100,8 @@ def AutoUpdate(request):
 def PidOpener(request):
     global session
     session = int(time.time())
+    if "oldSessions" not in os.listdir("./backend/emowave/"):
+        os.mkdir("./backend/emowave/oldSessions/")
     os.system("rm -rf ./backend/emowave/oldSessions/*")
     os.mkdir(f"./backend/emowave/oldSessions/{session}")
     os.system(f"touch ./backend/emowave/oldSessions/{session}/SENT.lock")
