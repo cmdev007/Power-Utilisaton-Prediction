@@ -128,3 +128,23 @@ def PidCloser(request):
         os.system(f"kill {i}")
     os.system(f"rm  ./backend/emowave/oldSessions/{session}/SENT.lock")
     return render(request, 'sentiment.html')
+
+def powerUpdater(request):
+
+    current = "NA"
+    future = "NA"
+    try:
+        f = open("./backend/power/prediction.csv")
+        mainData = f.read()
+        f.close()
+        mainData = mainData.split(",")
+        current = mainData[0]
+        future = mainData[1]
+    except:
+        pass
+    
+    context = {
+        "current" : current,
+        "future" : future
+    }
+    return JsonResponse(context)

@@ -19,5 +19,6 @@ urlpatterns = [
     path('charts',views.charts,name='charts'),
     path('AutoUpdate',views.AutoUpdate,name='AutoUpdate'),
     path('PidOpener',views.PidOpener,name='PidOpener'),
-    path('PidCloser',views.PidCloser,name='PidCloser')
+    path('PidCloser',views.PidCloser,name='PidCloser'),
+    path('powerUpdater',views.powerUpdater,name='powerUpdater')
 ]
