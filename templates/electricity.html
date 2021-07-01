@@ -49,7 +49,7 @@
                     </h4>
                 </div>
                 <br>
-                <div class="wrapper">
+                < <div class="container container-fluid">
                     <canvas id="powerChart"></canvas>
                 </div>
                 <br>
@@ -90,8 +90,36 @@
 
 
     <script>
+        var xlabels = [];
+        var buffdata = [];
+        powerChart = [];
+        chartIt();
 
+        async function chartIt() {
+            const ctx = document.getElementById('powerChart').getContext('2d');
+            powerChart = new Chart(ctx, {
+                data: {
+                    datasets: [{
+                        type: 'line',
+                        label: xlabels,
+                        data: buffdata,
+                        borderColor: 'rgb(218, 86, 72)'
+                    }],
+                    labels: ""
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
         function doUpdate(json_input) {
+            powerChart.data.datasets[0].data = json_input.timeseries;
+            powerChart.data.labels = json_input.xlabels;
+            powerChart.update();
            
             $(document).ready(function () {
                 var curr = json_input.current;
