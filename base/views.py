@@ -133,6 +133,7 @@ def powerUpdater(request):
 
     current = "NA"
     future = "NA"
+    cts = ""
     timeseries = []
     xlabels = []
     try:
@@ -144,6 +145,7 @@ def powerUpdater(request):
         mainData = mainData.split(",")
         current = mainData[0]
         future = mainData[1]
+        cts = mainData[2]
         timeseries = [i for i in pSeries["Consumption in Mega Units"]]
         xlabels = [i+1 for i in range(60)]
     except:
@@ -153,6 +155,7 @@ def powerUpdater(request):
         "current" : current,
         "future" : future,
         "timeseries" : timeseries,
-        "xlabels" : xlabels
+        "xlabels" : xlabels,
+        "cts" : cts
     }
     return JsonResponse(context)
