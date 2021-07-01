@@ -134,6 +134,7 @@ def powerUpdater(request):
     current = "NA"
     future = "NA"
     timeseries = []
+    xlabels = []
     try:
         pSeries = pd.read_csv("./backend/power/MU_Data.csv", index_col = 0)
 
@@ -144,12 +145,14 @@ def powerUpdater(request):
         current = mainData[0]
         future = mainData[1]
         timeseries = [i for i in pSeries["Consumption in Mega Units"]]
+        xlabels = [i+1 for i in range(60)]
     except:
         pass
     
     context = {
         "current" : current,
         "future" : future,
-        "timeseries" : timeseries
+        "timeseries" : timeseries,
+        "xlabels" : xlabels
     }
     return JsonResponse(context)
