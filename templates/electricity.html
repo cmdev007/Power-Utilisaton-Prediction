@@ -49,13 +49,13 @@
                     </h4>
                 </div>
                 <br>
-                < <div class="container container-fluid">
+                <div class="container container-fluid">
                     <canvas id="powerChart"></canvas>
                 </div>
                 <br>
                 <div class="wrapper">
                     <h5 class="card2">
-                        Yesterday's Power Consumption: <a><span class=" curr"></span></a>
+                        Previous Power Consumption: <a><span class=" curr"></span></a>
                     </h5>
                 </div>
                 <br>
@@ -120,30 +120,33 @@
             powerChart.data.datasets[0].data = json_input.timeseries;
             powerChart.data.labels = json_input.xlabels;
             powerChart.update();
-           
+            console.log()
             $(document).ready(function () {
                 var curr = json_input.current;
                 $(".curr").html(curr);
                 var futu = json_input.future;
                 $(".futu").html(futu);
+
+                var currDate = new Date(1000*(parseInt(json_input.cts)));
+                var day = currDate.getDate();
+                $(".day").html((day < 10 ? "0" : "") + day);
+                var month = currDate.getMonth();
+                $(".month").html((month < 10 ? "0" : "") + month);
+                var year = currDate.getFullYear();
+                $(".year").html((year < 10 ? "0" : "") + year);
+
+                var tomDate = new Date(1000*(parseInt(json_input.cts)+86400));
+                var day1 = tomDate.getDate();
+                $(".day1").html((day1 < 10 ? "0" : "") + day1);
+                var month1 = tomDate.getMonth();
+                $(".month1").html((month1 < 10 ? "0" : "") + month1);
+                var year1 = tomDate.getFullYear();
+                $(".year1").html((year1 < 10 ? "0" : "") + year1);
             });
         }
 
         $(document).ready(function () {
             setInterval(function () {
-                var day = new Date().getDate();
-                $(".day").html((day < 10 ? "0" : "") + day);
-                var month = new Date().getMonth();
-                $(".month").html((month < 10 ? "0" : "") + month);
-                var year = new Date().getFullYear();
-                $(".year").html((year < 10 ? "0" : "") + year);
-
-                var day1 = new Date(+new Date() + 86400000).getDate();
-                $(".day1").html((day1 < 10 ? "0" : "") + day1);
-                var month1 = new Date(+new Date() + 86400000).getMonth();
-                $(".month1").html((month1 < 10 ? "0" : "") + month1);
-                var year1 = new Date(+new Date() + 86400000).getFullYear();
-                $(".year1").html((year1 < 10 ? "0" : "") + year1);
                 $.ajax({
                     url: '/powerUpdater',
                     success: doUpdate
