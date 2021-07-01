@@ -2,24 +2,6 @@ from urllib.request import urlopen
 from urllib.request import urlretrieve
 import cgi, os, time
 
-# def smartDownloader(contains, key):
-#     counter = 0
-#     while(counter<=60):
-#         try:
-#             url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
-#             remotefile = urlopen(url)
-#             blah = remotefile.info()['Content-Disposition']
-#             value, params = cgi.parse_header(blah)
-#             filename = params["filename"]
-            
-#             if contains in filename:
-#                 urlretrieve(url, f"histData/{filename}")
-#                 counter+=1
-
-#             key -= 1
-#         except:
-#             pass
-
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
     remotefile = urlopen(url)
