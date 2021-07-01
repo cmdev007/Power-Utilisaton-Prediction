@@ -56,6 +56,10 @@ os.system(f"mkdir {DATADIR}")
 LKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
 smartDownloader("NLDC_PSP", LKEY)
 
+f = open("LKEY.txt", "w")
+f.write(str(LKEY))
+f.close()
+
 allPDF = os.listdir(DATADIR)
 allPDF.sort()
 
