@@ -50,15 +50,15 @@
                 </div>
                 <br>
                 <div class="wrapper">
-                <canvas id="powerChart"></canvas>
+                    <canvas id="powerChart"></canvas>
                 </div>
                 <br>
                 <div class="wrapper">
                     <h5 class="card2">
-                        Yesterday's Power Consumption: <a><span class=" day"></span></a>
+                        Yesterday's Power Consumption: <a><span class=" curr"></span></a>
                     </h5>
                 </div>
-                     <br>
+                <br>
             </div>
         </div>
 
@@ -80,7 +80,7 @@
                 </div>
                 <div class="wrapper">
                     <h5 class="card2">
-                        Predicted Power Consumption: <a><span class=" day"></span></a>
+                        Predicted Power Consumption: <a><span class=" futu"></span></a>
                     </h5>
                 </div>
                 <br>
@@ -90,6 +90,17 @@
 
 
     <script>
+
+        function doUpdate(json_input) {
+           
+            $(document).ready(function () {
+                var curr = json_input.current;
+                $(".curr").html(curr);
+                var futu = json_input.future;
+                $(".futu").html(futu);
+            });
+        }
+
         $(document).ready(function () {
             setInterval(function () {
                 var day = new Date().getDate();
@@ -99,16 +110,21 @@
                 var year = new Date().getFullYear();
                 $(".year").html((year < 10 ? "0" : "") + year);
 
-                var day1 = new Date(+ new Date()+86400000).getDate();
+                var day1 = new Date(+new Date() + 86400000).getDate();
                 $(".day1").html((day1 < 10 ? "0" : "") + day1);
-                var month1 = new Date(+ new Date()+86400000).getMonth();
+                var month1 = new Date(+new Date() + 86400000).getMonth();
                 $(".month1").html((month1 < 10 ? "0" : "") + month1);
-                var year1 = new Date(+ new Date()+86400000).getFullYear();
+                var year1 = new Date(+new Date() + 86400000).getFullYear();
                 $(".year1").html((year1 < 10 ? "0" : "") + year1);
+                $.ajax({
+                    url: '/powerUpdater',
+                    success: doUpdate
+                });
             }, 1000);
-            
+
+
         });
     </script>
 </body>
 
-{% endblock body %}
+{% endblock body %}2
