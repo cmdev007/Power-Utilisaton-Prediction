@@ -1,6 +1,8 @@
 from urllib.request import urlopen
 from urllib.request import urlretrieve
 import cgi, os, time
+import pandas as pd
+import numpy as np
 
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
@@ -65,3 +67,46 @@ if len(os.listdir("histData"))>=60:
 else:
     LKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
     threadRipper("NLDC_PSP", LKEY)
+
+
+DATADIR = "histData"
+# allPDF = os.listdir(DATADIR)
+# allPDF.sort()
+
+# for i in allPDF:
+#     yr = i[6:8]
+#     mn = i[3:5]
+#     dt = i[0:2]
+#     res = i[8:]
+#     os.rename(f"{DATADIR}/{i}", f"{DATADIR}/{yr}.{mn}.{dt}{res}")
+
+allPDF = os.listdir(DATADIR)
+allPDF.sort()
+
+for i in allPDF:
+    os.system(f"pdftotext -layout '{DATADIR}/{i}'")
+
+TXTDIR = "scrappedTXT"
+
+os.mkdir(TXTDIR)
+os.system(f"cp -rv {DATADIR}/*.txt scrappedTXT/")
+
+allTXT = os.listdir(TXTDIR)
+allTXT.sort()
+
+MU = {}
+for i in allTXT:
+    f = open(f"{TXTDIR}/{i}")
+    buff = f.readlines()
+    f.close()
+    for j in buff:
+        if "gujarat" in j.strip().lower() or "गुजरात" in j.strip().lower():
+            MU[i] = float(j.split()[3])
+            break
+
+pData = {"Date (YY-MM-DD)" : [i[:8] for i in list(MU.keys())],
+         "Consumption in Mega Units" : list(MU.values())}
+
+finalMU = pd.DataFrame(pData)
+
+finalMU.to_csv("MU_Data.csv",index=False)
