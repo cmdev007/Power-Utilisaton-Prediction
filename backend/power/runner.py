@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 from urllib.request import urlretrieve
-import cgi, os, time
+import cgi, os, time, datetime
 import pandas as pd
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -50,6 +50,7 @@ else:
     os.system("python3.8 starter.py")
 
 DATADIR = "currentData"
+os.system(f"rm -rf {DATADIR}")
 os.system(f"mkdir {DATADIR}")
 
 LKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
@@ -72,7 +73,7 @@ for i in allPDF:
     os.system(f"pdftotext -layout '{DATADIR}/{i}'")
 
 TXTDIR = "currentTXT"
-
+os.system(f"rm -rf {TXTDIR}")
 os.system(f"mkdir {TXTDIR}")
 os.system(f"cp -rv {DATADIR}/*.txt {TXTDIR}/")
 
@@ -108,11 +109,13 @@ nData = nData.reshape(1,60,1)
 pData = round(float(model.predict(nData)),2)
 
 cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
-cDate = f"{cDate[2]}/{cDate[1]}/{cDate[0]}"
+cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
 print(f"Prediction for tomorrow of {cDate} : {pData} MU")
 
 oData = float(finalMU["Consumption in Mega Units"].to_numpy()[-1])
 
+cTimestamp = int(time.mktime(datetime.datetime.strptime(cDate,"%d/%m/%Y").timetuple()))
+
 f = open("prediction.csv", "w")
-f.write(f"{oData},{pData}")
+f.write(f"{oData},{pData},{cTimestamp}")
 f.close()
