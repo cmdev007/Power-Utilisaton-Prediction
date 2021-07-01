@@ -14,14 +14,13 @@ def smartDownloader(contains, key):
     if contains in filename:
         urlretrieve(url, f"histData/{filename}")
     else:
-        print(f"{key} : {filename}")
         return None
-    return filename
 
 def threadRipper(contains, key):
     import threading
     NTHREADS = 10
     while(len(os.listdir("histData"))<60):
+        print(f"Download: {len(os.listdir('histData'))}/60")
         threads = []
 
         for j in range(NTHREADS):
