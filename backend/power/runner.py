@@ -2,6 +2,8 @@ from urllib.request import urlopen
 from urllib.request import urlretrieve
 import cgi, os, time
 import pandas as pd
+import numpy as np
+from tensorflow.keras.models import load_model
 
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
@@ -71,7 +73,7 @@ for i in allPDF:
 
 TXTDIR = "currentTXT"
 
-os.mkdir(TXTDIR)
+os.system(f"mkdir {TXTDIR}")
 os.system(f"cp -rv {DATADIR}/*.txt {TXTDIR}/")
 
 allTXT = os.listdir(TXTDIR)
@@ -92,9 +94,25 @@ for i in allTXT:
             MU[i[:8]] = float(j.split()[3])
             break
 
-pData = {"Date (YY-MM-DD)" : [i for i in list(MU.keys())],
-         "Consumption in Mega Units" : list(MU.values())}
+pData = {"Date (YY-MM-DD)" : [i for i in list(MU.keys())][-60:],
+         "Consumption in Mega Units" : [i for i in MU.values()][-60:]}
 
 finalMU = pd.DataFrame(pData)
 
 finalMU.to_csv("MU_Data.csv",index=False)
+
+print("Loading model...")
+model = load_model("model_bd_v1")
+nData = np.array(finalMU["Consumption in Mega Units"])
+nData = nData.reshape(1,60,1)
+pData = round(float(model.predict(nData)),2)
+
+cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
+cDate = f"{cDate[2]}/{cDate[1]}/{cDate[0]}"
+print(f"Prediction for tomorrow of {cDate} : {pData} MU")
+
+oData = float(finalMU["Consumption in Mega Units"].to_numpy()[-1])
+
+f = open("prediction.csv", "w")
+f.write(f"{oData},{pData}")
+f.close()
