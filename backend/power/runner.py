@@ -2,7 +2,6 @@ from urllib.request import urlopen
 from urllib.request import urlretrieve
 import cgi, os, time
 import pandas as pd
-import numpy as np
 
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
@@ -12,30 +11,10 @@ def smartDownloader(contains, key):
     filename = params["filename"]
     
     if contains in filename:
-        urlretrieve(url, f"histData/{filename}")
+        urlretrieve(url, f"currentData/{filename}")
     else:
         print(f"{key} : {filename}")
         return None
-    return filename
-
-def threadRipper(contains, key):
-    import threading
-    NTHREADS = 10
-    while(len(os.listdir("histData"))<60):
-        threads = []
-
-        for j in range(NTHREADS):
-            t = threading.Thread(target=smartDownloader,args=(contains,key-j))
-            t.daemon = True
-            threads.append(t)
-
-        for j in range(NTHREADS):
-            threads[j].start()
-
-        for j in range(NTHREADS):
-            threads[j].join(timeout=20)
-
-        key-=NTHREADS
 
 def link2id(link):
     for i in range(len(link)-1,0,-1):
@@ -66,11 +45,14 @@ if "histData" not in os.listdir():
 if len(os.listdir("histData"))>=60:
     pass
 else:
-    LKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
-    threadRipper("NLDC_PSP", LKEY)
+    os.system("python3.8 starter.py")
 
+DATADIR = "currentData"
+os.system(f"mkdir {DATADIR}")
 
-DATADIR = "histData"
+LKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
+smartDownloader("NLDC_PSP", LKEY)
+
 allPDF = os.listdir(DATADIR)
 allPDF.sort()
 
@@ -87,25 +69,30 @@ allPDF.sort()
 for i in allPDF:
     os.system(f"pdftotext -layout '{DATADIR}/{i}'")
 
-TXTDIR = "scrappedTXT"
+TXTDIR = "currentTXT"
 
 os.mkdir(TXTDIR)
-os.system(f"cp -rv {DATADIR}/*.txt scrappedTXT/")
+os.system(f"cp -rv {DATADIR}/*.txt {TXTDIR}/")
 
 allTXT = os.listdir(TXTDIR)
 allTXT.sort()
 
+cData = pd.read_csv("MU_Data.csv", index_col=0)
+
 MU = {}
+for i in range(cData.shape[0]):
+    MU[cData.index[i]] = cData["Consumption in Mega Units"][i]
+
 for i in allTXT:
     f = open(f"{TXTDIR}/{i}")
     buff = f.readlines()
     f.close()
     for j in buff:
         if "gujarat" in j.strip().lower() or "गुजरात" in j.strip().lower():
-            MU[i] = float(j.split()[3])
+            MU[i[:8]] = float(j.split()[3])
             break
 
-pData = {"Date (YY-MM-DD)" : [i[:8] for i in list(MU.keys())],
+pData = {"Date (YY-MM-DD)" : [i for i in list(MU.keys())],
          "Consumption in Mega Units" : list(MU.values())}
 
 finalMU = pd.DataFrame(pData)
