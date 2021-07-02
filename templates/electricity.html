@@ -55,10 +55,19 @@
                 <br>
                 <div class="wrapper">
                     <h5 class="card2">
-                        Previous Power Consumption: <a><span class=" curr"></span></a>
+                        Previous Power Consumption: <a><span class=" curr"></span></a> MU
                     </h5>
                 </div>
-                <br>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        MAE: <a><span class=" MAE"></span></a>
+                    </h5>
+                </div>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        RMSE: <a><span class=" RMSE"></span></a>
+                    </h5>
+                </div>
             </div>
         </div>
 
@@ -126,6 +135,11 @@
                 $(".curr").html(curr);
                 var futu = json_input.future;
                 $(".futu").html(futu);
+
+                var MAE = json_input.MAE;
+                $(".MAE").html(MAE);
+                var RMSE = json_input.RMSE;
+                $(".RMSE").html(RMSE);
 
                 var currDate = new Date(1000*(parseInt(json_input.cts)));
                 var day = currDate.getDate();
