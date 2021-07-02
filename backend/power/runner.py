@@ -127,8 +127,8 @@ power_metrics.loc[cTimestamp+86400,"prediction"] = pData
 power_metrics.to_csv("power_metrics.csv")
 power_metrics = power_metrics.dropna()
 try:
-    MAE = mean_absolute_error(power_metrics["actual"], power_metrics["prediction"])
-    RMSE = mean_squared_error(power_metrics["actual"], power_metrics["prediction"], squared=False)
+    MAE = round(mean_absolute_error(power_metrics["actual"], power_metrics["prediction"]),2)
+    RMSE = round(mean_squared_error(power_metrics["actual"], power_metrics["prediction"], squared=False),2)
 except:
     MAE = "NA"
     RMSE = "NA"
