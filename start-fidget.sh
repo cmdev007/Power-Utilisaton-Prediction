@@ -1,4 +1,5 @@
 #!/bin/bash
+pkill python3.8
 cd backend/power/
 rm -rf LKEY.txt
 python3.8 runner.py&
