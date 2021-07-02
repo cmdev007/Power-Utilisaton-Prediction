@@ -147,7 +147,7 @@ def powerUpdater(request):
         future = mainData[1]
         cts = mainData[2]
         timeseries = [i for i in pSeries["Consumption in Mega Units"]]
-        xlabels = [i+1 for i in range(60)]
+        xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
     except:
         pass
     
