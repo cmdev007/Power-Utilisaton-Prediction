@@ -136,6 +136,9 @@ def powerUpdater(request):
     cts = ""
     timeseries = []
     xlabels = []
+    MAE = "NA"
+    RMSE = "NA"
+
     try:
         pSeries = pd.read_csv("./backend/power/MU_Data.csv", index_col = 0)
 
@@ -146,6 +149,8 @@ def powerUpdater(request):
         current = mainData[0]
         future = mainData[1]
         cts = mainData[2]
+        MAE = mainData[3]
+        RMSE = mainData[4]
         timeseries = [i for i in pSeries["Consumption in Mega Units"]]
         xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
     except:
@@ -156,6 +161,8 @@ def powerUpdater(request):
         "future" : future,
         "timeseries" : timeseries,
         "xlabels" : xlabels,
-        "cts" : cts
+        "cts" : cts,
+        "MAE" : MAE,
+        "RMSE" : RMSE
     }
     return JsonResponse(context)

@@ -4,6 +4,7 @@ import cgi, os, time, datetime
 import pandas as pd
 import numpy as np
 from tensorflow.keras.models import load_model
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
@@ -120,6 +121,18 @@ oData = float(finalMU["Consumption in Mega Units"].to_numpy()[-1])
 
 cTimestamp = int(time.mktime(datetime.datetime.strptime(cDate,"%d/%m/%Y").timetuple()))
 
+power_metrics = pd.read_csv("power_metrics.csv", index_col=0)
+power_metrics.loc[cTimestamp,"actual"] = oData
+power_metrics.loc[cTimestamp+86400,"prediction"] = pData
+power_metrics.to_csv("power_metrics.csv")
+power_metrics = power_metrics.dropna()
+try:
+    MAE = mean_absolute_error(power_metrics["actual"], power_metrics["prediction"])
+    RMSE = mean_squared_error(power_metrics["actual"], power_metrics["prediction"], squared=False)
+except:
+    MAE = "NA"
+    RMSE = "NA"
+
 f = open("prediction.csv", "w")
-f.write(f"{oData},{pData},{cTimestamp}")
+f.write(f"{oData},{pData},{cTimestamp},{MAE},{RMSE}")
 f.close()
