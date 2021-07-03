@@ -160,14 +160,19 @@
         }
 
         $(document).ready(function () {
+                $.ajax({
+                    url: '/powerUpdater',
+                    success: doUpdate
+                });
+            });
+
+        $(document).ready(function () {
             setInterval(function () {
                 $.ajax({
                     url: '/powerUpdater',
                     success: doUpdate
                 });
-            }, 1000);
-
-
+            }, 30000);
         });
     </script>
 </body>
