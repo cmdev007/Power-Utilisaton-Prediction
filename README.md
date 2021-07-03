@@ -5,7 +5,7 @@
 1. Power Utilization Prediction
 1. Sentiment(Emotion) Analysis
 1. Stock Market Prediction
-\
+
 \
 \
 <img src="https://github.com/cmdev007/Power-Utilisaton-Prediction/raw/main/static/img/graph.svg">
