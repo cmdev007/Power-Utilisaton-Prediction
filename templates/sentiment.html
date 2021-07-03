@@ -258,12 +258,19 @@
             });
         }
 
+        $.ajax({
+            url: '/AutoUpdate',
+            success: doUpdate
+        });
+
         setInterval(function () {
             $.ajax({
                 url: '/AutoUpdate',
                 success: doUpdate
             });
         }, 1000);
+
+        
     </script>
 </body>
 {% endblock body %}
