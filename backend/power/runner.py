@@ -108,10 +108,11 @@ finalMU = pd.DataFrame(pData)
 finalMU.to_csv("MU_Data.csv",index=False)
 
 print("Loading model...")
-model = load_model("model_bd_v1")
+model = load_model("model_bd_7")
 nData = np.array(finalMU["Consumption in Mega Units"])
 nData = nData.reshape(1,60,1)
-pData = round(float(model.predict(nData)),2)
+pData7 = model.predict(nData)[0]
+pData = round(float(pData7[0]),2)
 
 cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
 cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
@@ -135,4 +136,10 @@ except:
 
 f = open("prediction.csv", "w")
 f.write(f"{oData},{pData},{cTimestamp},{MAE},{RMSE}")
+f.close()
+
+f = open("week_prediction.csv", "w")
+f.write("predictions\n")
+for i in pData7:
+    f.write(f"{i}\n")
 f.close()

@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import time
 import random
+from datetime import datetime
 
 # Create your views here.
 
@@ -138,13 +139,17 @@ def powerUpdater(request):
     xlabels = []
     MAE = "NA"
     RMSE = "NA"
-
+    week_data = []
+    week_labels = []
+    past_pred = []
     try:
         pSeries = pd.read_csv("./backend/power/MU_Data.csv", index_col = 0)
 
         f = open("./backend/power/prediction.csv")
         mainData = f.read()
         f.close()
+        f = open("./backend/power/prediction.csv")
+        week_data = [i for i in pd.read_csv("./backend/power/week_prediction.csv")["predictions"]]
         mainData = mainData.split(",")
         current = mainData[0]
         future = mainData[1]
@@ -153,6 +158,13 @@ def powerUpdater(request):
         RMSE = mainData[4]
         timeseries = [i for i in pSeries["Consumption in Mega Units"]]
         xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
+        for i in range(7):
+            dateObj = datetime.fromtimestamp(int(cts)+((i+2)*86400))
+            week_labels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
+
+        buffPastPred = [i for i in pd.read_csv("./backend/power/power_metrics.csv")["prediction"].dropna()][-60:]
+        past_pred = [0 for i in range(60-len(buffPastPred))]
+        past_pred.extend(buffPastPred)
     except:
         pass
     
@@ -163,6 +175,9 @@ def powerUpdater(request):
         "xlabels" : xlabels,
         "cts" : cts,
         "MAE" : MAE,
-        "RMSE" : RMSE
+        "RMSE" : RMSE,
+        "week_data" : week_data,
+        "week_labels" : week_labels,
+        "past_pred" : past_pred
     }
     return JsonResponse(context)
