@@ -82,11 +82,17 @@
                         <a><span class=" year1"></span></a>
                     </h4>
                 </div>
+                
+                <br>
+                <div class="container container-fluid">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <br>
 
-                <div class="wrapper">
+                <!-- <div class="wrapper">
                     <img src="/static/img/uparrow.png" style="height:300px;" />
                     <img src="/static/img/downarrow.png" style="height:300px;" />
-                </div>
+                </div> -->
                 <div class="wrapper">
                     <h5 class="card2">
                         Predicted Power Consumption: <a><span class=" futu"></span></a> MU
@@ -103,6 +109,7 @@
         var buffdata = [];
         powerChart = [];
         chartIt();
+        chartItP();
 
         async function chartIt() {
             const ctx = document.getElementById('powerChart').getContext('2d');
@@ -110,9 +117,15 @@
                 data: {
                     datasets: [{
                         type: 'line',
-                        label: "Past 60 days' power consumption (in MU)",
+                        label: "Actual power consumption (in MU)",
                         data: buffdata,
                         borderColor: 'rgb(218, 86, 72)'
+                    },
+                    {
+                        type: 'line',
+                        label: "Predicted power consumption (in MU)",
+                        data: buffdata,
+                        borderColor: 'rgb(141, 193, 64)'
                     }],
                     labels: ""
                 },
@@ -124,11 +137,39 @@
                     }
                 }
             });
-        }
+        };
+
+        async function chartItP() {
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            predictionChart = new Chart(ctx, {
+                data: {
+                    datasets: [{
+                        type: 'line',
+                        label: "future week's power consumption (in MU)",
+                        data: buffdata,
+                        borderColor: 'rgb(141, 193, 64)'
+                    }],
+                    labels: ""
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
         function doUpdate(json_input) {
             powerChart.data.datasets[0].data = json_input.timeseries;
+            powerChart.data.datasets[1].data = json_input.past_pred;
             powerChart.data.labels = json_input.xlabels;
             powerChart.update();
+
+            predictionChart.data.datasets[0].data = json_input.week_data;
+            predictionChart.data.labels = json_input.week_labels;
+            predictionChart.update();
 
             $(document).ready(function () {
                 var curr = json_input.current;
