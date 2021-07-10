@@ -20,5 +20,6 @@ urlpatterns = [
     path('AutoUpdate',views.AutoUpdate,name='AutoUpdate'),
     path('PidOpener',views.PidOpener,name='PidOpener'),
     path('PidCloser',views.PidCloser,name='PidCloser'),
-    path('powerUpdater',views.powerUpdater,name='powerUpdater')
+    path('powerUpdater',views.powerUpdater,name='powerUpdater'),
+    path('powerUpdaterV2',views.powerUpdaterV2,name='powerUpdaterV2')
 ]

@@ -1,10 +1,11 @@
-from urllib.request import urlopen
-from urllib.request import urlretrieve
+from bs4 import BeautifulSoup
+from urllib.request import urlopen, urlretrieve, Request
 import cgi, os, time, datetime
 import pandas as pd
 import numpy as np
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from mechanize import Browser
 
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
@@ -43,12 +44,92 @@ def latestID(url):
         if "nldc_psp" in i["href"]:
             return link2id(str(i["href"]))
 
-if "histData" not in os.listdir():
-    os.mkdir("histData")
-if len(os.listdir("histData"))>=60:
-    pass
-else:
-    os.system("python3.8 starter.py")
+def weatherFetch(ts):
+    city_frac = {'ahmedabad' : 0.43,
+                'surat' : 0.32,
+                'vadodara' : 0.12,
+                'rajkot' : 0.09,
+                'bhavnagar' : 0.04}
+    dObj = datetime.datetime.fromtimestamp(int(ts))
+    Date = f"{dObj.year}-{dObj.month}-{dObj.day}"
+    datetime.datetime.fromtimestamp(ts)
+    ans = np.zeros(7)
+    for city in city_frac:
+        url = f"https://www.worldweatheronline.com/{city}-weather-history/gujarat/in.aspx"
+        
+        brwsr = Browser()
+        brwsr.open(url)
+        brwsr.select_form(name = 'aspnetForm')
+        brwsr['ctl00$MainContentHolder$txtPastDate'] = Date
+        response = brwsr.submit()
+        data = response.read()
+        
+        soup = BeautifulSoup(data,'html.parser')
+        soupD = soup.find_all("input", attrs={"class" : ["form-control"], "id" : ["ctl00_MainContentHolder_txtPastDate"]})[0]
+        soupD = soupD.attrs['value']
+        soupD = int(time.mktime(datetime.datetime.strptime(soupD,"%Y-%m-%d").timetuple()))
+
+
+        soup = BeautifulSoup(str(soup).split("Historical Weather on")[-1],'html.parser')
+
+        buff = ""
+        for link in soup.find_all("div",{"class":["col mr-1", "col mr-1 d-none d-sm-block","col mr-1 d-none d-md-block"]}):
+            buff+=link.text+"\n"
+        extFeat = []
+        for i in buff.split("\n\n")[-1].split("\n")[:-1]:
+            buffC = ""
+            for j in i:
+                try:
+                    float(buffC+j)
+                    buffC+=j
+                except:
+                    break
+            extFeat.append(float(buffC))
+        extFeat = np.array(extFeat)
+        ans+=(extFeat*city_frac[city])
+    return [i for i in ans], soupD
+
+def pastFiller():
+    cData = pd.read_csv("ALL_Data.csv", index_col=0)
+    model = load_model("model_bd_v1/")
+    from sklearn.metrics import mean_absolute_error
+    f = open("power_metrics.csv","w")
+    f.write("timestamp,actual,prediction")
+    f.close()
+    MAE = []
+    pDf = pd.read_csv("power_metrics.csv", index_col=0)
+    for i in range(60):
+        ts = int(cData.index[-(i+1)])
+        pDf.loc[ts,"actual"] = cData.loc[ts,"Consumption in Mega Units"]
+
+        pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60-i:len(cData)-i,:].to_numpy().reshape(1,60,1))
+        pData = round(float(pData7[0]),2)
+        pDf.loc[ts+86400, "prediction"] = pData
+        buff = pDf.sort_index().dropna()
+        try:
+            MAE.append(mean_absolute_error(buff["actual"],buff["prediction"]))
+        except:
+            pass
+
+    pDf = pDf.sort_index().dropna()
+
+    pDf.to_csv("power_metrics.csv")
+
+    f = open("MAE.csv","w")
+    f.write("MAE\n")
+    for i in MAE:
+        f.write(f"{i}\n")
+    f.close()
+
+# if "histData" not in os.listdir():
+#     os.mkdir("histData")
+# if len(os.listdir("histData"))>=60:
+#     pass
+# else:
+#     os.system("python3.8 starter.py")
+
+if "power_metrics.csv" not in os.listdir():
+    pastFiller()
 
 DATADIR = "currentData"
 os.system(f"rm -rf {DATADIR}")
@@ -85,11 +166,15 @@ os.system(f"cp -rv {DATADIR}/*.txt {TXTDIR}/")
 allTXT = os.listdir(TXTDIR)
 allTXT.sort()
 
-cData = pd.read_csv("MU_Data.csv", index_col=0)
+cData = pd.read_csv("ALL_Data.csv", index_col=0)
 
-MU = {}
-for i in range(cData.shape[0]):
-    MU[cData.index[i]] = cData["Consumption in Mega Units"][i]
+yrf = "20"+yr
+sDate = f"{dt}/{mn}/{yrf}"
+cTimestamp = int(time.mktime(datetime.datetime.strptime(sDate,"%d/%m/%Y").timetuple()))
+
+# MU = {}
+# for i in range(cData.shape[0]):
+#     MU[cData.index[i]] = cData["Consumption in Mega Units"][i]
 
 for i in allTXT:
     f = open(f"{TXTDIR}/{i}")
@@ -97,30 +182,26 @@ for i in allTXT:
     f.close()
     for j in buff:
         if "gujarat" in j.strip().lower() or "गुजरात" in j.strip().lower():
-            MU[i[:8]] = float(j.split()[3])
+            cData.loc[cTimestamp,"Consumption in Mega Units"] = float(j.split()[3])
             break
 
-pData = {"Date (YY-MM-DD)" : [i for i in list(MU.keys())][-60:],
-         "Consumption in Mega Units" : [i for i in MU.values()][-60:]}
-
-finalMU = pd.DataFrame(pData)
-
-finalMU.to_csv("MU_Data.csv",index=False)
+WData, WDate = weatherFetch(cTimestamp)
+cData.loc[WDate,list(cData.columns)[1:]] = WData
+cData = cData.dropna()
+cData.to_csv("ALL_Data.csv")
 
 print("Loading model...")
-model = load_model("model_bd_7")
-nData = np.array(finalMU["Consumption in Mega Units"])
-nData = nData.reshape(1,60,1)
-pData7 = model.predict(nData)[0]
+model = load_model("model_bd_v1")
+pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,60,1))
 pData = round(float(pData7[0]),2)
 
-cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
-cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
-print(f"Prediction for tomorrow of {cDate} : {pData} MU")
+# cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
+# cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
+print(f"Prediction for tomorrow {pData} MU")
 
-oData = float(finalMU["Consumption in Mega Units"].to_numpy()[-1])
+oData = float(cData["Consumption in Mega Units"].to_numpy()[-1])
 
-cTimestamp = int(time.mktime(datetime.datetime.strptime(cDate,"%d/%m/%Y").timetuple()))
+# cTimestamp = int(time.mktime(datetime.datetime.strptime(cDate,"%d/%m/%Y").timetuple()))
 
 power_metrics = pd.read_csv("power_metrics.csv", index_col=0)
 power_metrics.loc[cTimestamp,"actual"] = oData
@@ -130,6 +211,9 @@ power_metrics = power_metrics.dropna()
 try:
     MAE = round(mean_absolute_error(power_metrics["actual"], power_metrics["prediction"]),2)
     RMSE = round(mean_squared_error(power_metrics["actual"], power_metrics["prediction"], squared=False),2)
+    f = open("MAE.csv","a")
+    f.write(f"{MAE}\n")
+    f.close()
 except:
     MAE = "NA"
     RMSE = "NA"
@@ -138,8 +222,8 @@ f = open("prediction.csv", "w")
 f.write(f"{oData},{pData},{cTimestamp},{MAE},{RMSE}")
 f.close()
 
-f = open("week_prediction.csv", "w")
-f.write("predictions\n")
-for i in pData7:
-    f.write(f"{i}\n")
-f.close()
+# f = open("week_prediction.csv", "w")
+# f.write("predictions\n")
+# for i in pData7:
+#     f.write(f"{i}\n")
+# f.close()
