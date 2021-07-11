@@ -222,8 +222,15 @@ f = open("prediction.csv", "w")
 f.write(f"{oData},{pData},{cTimestamp},{MAE},{RMSE}")
 f.close()
 
-# f = open("week_prediction.csv", "w")
-# f.write("predictions\n")
-# for i in pData7:
-#     f.write(f"{i}\n")
-# f.close()
+for i in range(7):
+    pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,60,1))
+    pData = round(float(pData7[0]),2)
+    ts = int(cData.index[-1])
+    cData.loc[ts+86400, "Consumption in Mega Units"] = pData
+
+week_prediction = pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-7:,:]
+f = open("week_prediction.csv", "w")
+f.write("predictions\n")
+for i in week_prediction["Consumption in Mega Units"]:
+    f.write(f"{i}\n")
+f.close()

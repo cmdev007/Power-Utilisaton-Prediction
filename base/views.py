@@ -151,7 +151,7 @@ def powerUpdater(request):
         mainData = f.read()
         f.close()
         f = open("./backend/power/prediction.csv")
-        # week_data = [i for i in pd.read_csv("./backend/power/week_prediction.csv")["predictions"]]
+        week_data = [i for i in pd.read_csv("./backend/power/week_prediction.csv")["predictions"]]
         mainData = mainData.split(",")
         current = mainData[0]
         future = mainData[1]
@@ -162,9 +162,9 @@ def powerUpdater(request):
         for i in power_metrics.index:
             dateObj = datetime.fromtimestamp(int(i))
             xlabels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
-        # for i in range(7):
-        #     dateObj = datetime.fromtimestamp(int(cts)+((i+2)*86400))
-        #     week_labels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
+        for i in range(7):
+            dateObj = datetime.fromtimestamp(int(cts)+((i+2)*86400))
+            week_labels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
 
         past_pred = [i for i in power_metrics["prediction"]][-60:]
         MAE_all = [i for i in pd.read_csv("MAE.csv")["MAE"]]
