@@ -11,18 +11,40 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+    < script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" >
+  </script>
+
+  </script>
   <title>{% block title%}{% endblock title%} | Project Fidget</title>
   <style>
     html,
     body {
       overflow-x: hidden;
     }
+
+
+    .dropdown-submenu .dropdown-menu {
+      position: relative;
+      display: none;
+      top: -7px;
+      left: 100%;
+      margin-top: -1px;
+    }
+    .dropdown-menu .dropdown-submenu-right{
+      right:auto;
+      left:100%;
+      top:-7px;
+      
+    }
+    .dropdown-menu > li:hover > .dropdown-submenu{
+      display:block;
+    }
   </style>
 </head>
 
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/"><img src="static/img/fidget.png" height="40px"></img></a>
@@ -40,12 +62,20 @@
               aria-expanded="false">
               Projects
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark bg-dark" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item " href="/electricity">Electricity Consumption Prediction</a></li>
-              <li><a class="dropdown-item" href="/sentiment">Sentiment Analysis</a></li>
-              {% comment %} <li><a class="dropdown-item" href="/stock">Stock Market Prediction</a></li> {% endcomment %}
+            <ul class="dropdown-menu dropdown-menu-dark bg-dark">
+              <li class="nav-item dropdown">
+                <a class=" nav-link active" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false" align="center">Power Utilisation &raquo</a>
+                <ul class="dropdown-menu dropdown-submenu dropdown-submenu-right dropdown-menu-dark bg-dark">
+                  <li class="dropdown-item"><a class="nav-link active" href="/electricity">Action</a></li>
+                  <li class="dropdown-item"><a class="nav-link active" href="/electricity">Another action</a></li>
+                  <li class="dropdown-item"><a class="nav-link active" href="/electricity">Something else here</a></li>
+                </ul>
+              </li>
+              <li class="dropdown-item"><a class="nav-link active" href="/sentiment">Sentiment Analysis</a></li>
             </ul>
           </li>
+          {% comment %} <li><a class="dropdown-item" href="/stock">Stock Market Prediction</a></li> {% endcomment %}
           <li class="nav-item">
             <a class="nav-link active" href="/about">About Us</a>
           </li>
@@ -53,14 +83,14 @@
       </div>
     </div>
   </nav>
+
+
   {% block  body%}{% endblock body %}
 
   <!-- Optional JavaScript; choose one of the two! -->
 
   <!-- Option 1: Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
-  </script>
+
 
   <!-- Option 2: Separate Popper and Bootstrap JS -->
   <!--
