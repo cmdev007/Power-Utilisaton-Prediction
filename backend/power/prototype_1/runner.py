@@ -7,6 +7,11 @@ from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from mechanize import Browser
 
+if time.tzname[-1] == "UTC":
+    LAGFLAG = True
+else:
+    LAGFLAG = False
+
 def smartDownloader(contains, key):
     url = f"https://posoco.in/download/20-05-21_nldc_psp/?wpdmdl={key}"
     remotefile = urlopen(url)
@@ -52,7 +57,6 @@ def weatherFetch(ts):
                 'bhavnagar' : 0.04}
     dObj = datetime.datetime.fromtimestamp(int(ts))
     Date = f"{dObj.year}-{dObj.month}-{dObj.day}"
-    datetime.datetime.fromtimestamp(ts)
     ans = np.zeros(7)
     for city in city_frac:
         url = f"https://www.worldweatheronline.com/{city}-weather-history/gujarat/in.aspx"
@@ -68,7 +72,8 @@ def weatherFetch(ts):
         soupD = soup.find_all("input", attrs={"class" : ["form-control"], "id" : ["ctl00_MainContentHolder_txtPastDate"]})[0]
         soupD = soupD.attrs['value']
         soupD = int(time.mktime(datetime.datetime.strptime(soupD,"%Y-%m-%d").timetuple()))
-
+        if LAGFLAG:
+            soupD-=19800
 
         soup = BeautifulSoup(str(soup).split("Historical Weather on")[-1],'html.parser')
 
@@ -171,6 +176,8 @@ cData = pd.read_csv("../ALL_Data.csv", index_col=0)
 yrf = "20"+yr
 sDate = f"{dt}/{mn}/{yrf}"
 cTimestamp = int(time.mktime(datetime.datetime.strptime(sDate,"%d/%m/%Y").timetuple()))
+if LAGFLAG:
+    cTimestamp-=19800
 
 # MU = {}
 # for i in range(cData.shape[0]):
