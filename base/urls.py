@@ -10,6 +10,8 @@ urlpatterns = [
     path('',views.home, name='home'),
     path('about', views.about, name='about'),
     path('sentiment', views.sentiment, name='sentiment'),
+    path('electricitylr', views.electricitylr, name='electricitylr'),
+    path('electricity', views.electricity, name='electricity'),
     path('electricity', views.electricity, name='electricity'),
     path('stock',views.stock,name='stock'),
     path('login',views.login,name='login'),
@@ -20,6 +22,7 @@ urlpatterns = [
     path('AutoUpdate',views.AutoUpdate,name='AutoUpdate'),
     path('PidOpener',views.PidOpener,name='PidOpener'),
     path('PidCloser',views.PidCloser,name='PidCloser'),
+    path('powerUpdaterLr',views.powerUpdaterLr,name='powerUpdaterLr'),
     path('powerUpdater',views.powerUpdater,name='powerUpdater'),
     path('powerUpdaterV2',views.powerUpdaterV2,name='powerUpdaterV2')
 ]

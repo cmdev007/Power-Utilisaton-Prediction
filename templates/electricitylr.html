@@ -1,0 +1,221 @@
+{% extends 'index.html' %}
+{% block title %}Electricity Consumption{% endblock title %}
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .bdr {
+        background-color: #f7deff;
+        border-radius: 1.5rem;
+    }
+
+    .bdr1 {
+        background-color: #feeee2;
+        border-radius: 1.5rem;
+    }
+
+    .card1 {
+        color: #027cfd;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .card2 {
+        color: #00821c;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+</head>
+
+<body>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="bdr1">
+                <br>
+                <div class="wrapper">
+                    <h4 class="card1">
+                        <a><span class=" day"></span></a> -
+                        <a><span class=" month"></span></a> -
+                        <a><span class=" year"></span></a>
+                    </h4>
+                </div>
+                <br>
+                <div class="container container-fluid">
+                    <canvas id="powerChart"></canvas>
+                </div>
+                <br>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        Previous Power Consumption: <a><span class=" curr"></span></a> MU
+                    </h5>
+                </div>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        MAE: <a><span class=" MAE"></span></a>
+                    </h5>
+                </div>
+                <div class="wrapper">
+                    <h5 class="card2">
+                        RMSE: <a><span class=" RMSE"></span></a>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="bdr">
+                <br>
+                <div class="wrapper">
+
+                    <h4 class="card1">
+                        <a><span class=" day1"></span></a> -
+                        <a><span class=" month1"></span></a> -
+                        <a><span class=" year1"></span></a>
+                    </h4>
+                </div>
+                
+                <br>
+                <div class="container container-fluid">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <br>
+
+                <!-- <div class="wrapper">
+                    <img src="/static/img/uparrow.png" style="height:300px;" />
+                    <img src="/static/img/downarrow.png" style="height:300px;" />
+                </div> -->
+                <div class="wrapper">
+                    <h5 class="card2">
+                        Predicted Power Consumption: <a><span class=" futu"></span></a> MU
+                    </h5>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var xlabels = [];
+        var buffdata = [];
+        powerChart = [];
+        chartIt();
+        chartItP();
+
+        async function chartIt() {
+            const ctx = document.getElementById('powerChart').getContext('2d');
+            powerChart = new Chart(ctx, {
+                data: {
+                    datasets: [{
+                        type: 'line',
+                        label: "Actual power consumption (in MU)",
+                        data: buffdata,
+                        borderColor: 'rgb(218, 86, 72)'
+                    },
+                    {
+                        type: 'line',
+                        label: "Predicted power consumption (in MU)",
+                        data: buffdata,
+                        borderColor: 'rgb(141, 193, 64)'
+                    }],
+                    labels: ""
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        async function chartItP() {
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            predictionChart = new Chart(ctx, {
+                data: {
+                    datasets: [{
+                        type: 'line',
+                        label: "future week's power consumption (in MU)",
+                        data: buffdata,
+                        borderColor: 'rgb(141, 193, 64)'
+                    }],
+                    labels: ""
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        function doUpdate(json_input) {
+            powerChart.data.datasets[0].data = json_input.timeseries;
+            powerChart.data.datasets[1].data = json_input.past_pred;
+            powerChart.data.labels = json_input.xlabels;
+            powerChart.update();
+
+            predictionChart.data.datasets[0].data = json_input.week_data;
+            predictionChart.data.labels = json_input.week_labels;
+            predictionChart.update();
+
+            $(document).ready(function () {
+                var curr = json_input.current;
+                $(".curr").html(curr);
+                var futu = json_input.future;
+                $(".futu").html(futu);
+
+                var MAE = json_input.MAE;
+                $(".MAE").html(MAE);
+                var RMSE = json_input.RMSE;
+                $(".RMSE").html(RMSE);
+
+                var currDate = new Date(1000*(parseInt(json_input.cts)));
+                var day = currDate.getDate();
+                $(".day").html((day < 10 ? "0" : "") + day);
+                var month = currDate.getMonth()+1;
+                $(".month").html((month < 10 ? "0" : "") + month);
+                var year = currDate.getFullYear();
+                $(".year").html((year < 10 ? "0" : "") + year);
+
+                var tomDate = new Date(1000*(parseInt(json_input.cts)+86400));
+                var day1 = tomDate.getDate();
+                $(".day1").html((day1 < 10 ? "0" : "") + day1);
+                var month1 = tomDate.getMonth()+1;
+                $(".month1").html((month1 < 10 ? "0" : "") + month1);
+                var year1 = tomDate.getFullYear();
+                $(".year1").html((year1 < 10 ? "0" : "") + year1);
+            });
+        }
+
+        $(document).ready(function () {
+                $.ajax({
+                    url: '/powerUpdaterLr',
+                    success: doUpdate
+                });
+            });
+
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    url: '/powerUpdaterLr',
+                    success: doUpdate
+                });
+            }, 30000);
+        });
+    </script>
+</body>
+
+{% endblock body %}2

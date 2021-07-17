@@ -89,9 +89,65 @@ def weatherFetch(ts):
         ans+=(extFeat*city_frac[city])
     return [i for i in ans], soupD
 
+def this2that(data, test = False, SScaler = None, MMScaler = None, lmbda = None):
+    from scipy.stats import boxcox
+    if not test:
+        pp1, lmbda = boxcox(data.to_numpy())
+    else:
+        pp1 = boxcox(data, lmbda)
+
+    pp2 = [i for i in pp1]
+
+    from sklearn.preprocessing import StandardScaler
+
+    if not test:
+        SScaler = StandardScaler()
+        SScaler.fit(np.array(pp2).reshape(-1,1))
+    pp3 = SScaler.transform(np.array(pp2).reshape(-1,1))
+
+    # example of normalization
+    from sklearn.preprocessing import MinMaxScaler
+    if not test:
+        MMScaler = MinMaxScaler()
+        MMScaler.fit(pp3)
+    # difference transform
+    pp4 = MMScaler.transform(pp3)
+
+    if not test:
+        return pp4, lmbda, SScaler, MMScaler, pp1
+    else:
+        return pp4
+
+def that2this(data, lmbda, SScaler, MMScaler, Dinv=None):
+    pp3i = MMScaler.inverse_transform(data)
+
+    pp2i = SScaler.inverse_transform(pp3i)
+    pp2i = pp2i.reshape(pp2i.shape[0],)
+
+    def invert_difference(orig_data, diff_data, interval):
+        return [diff_data[i-interval] + orig_data[i-interval] for i in range(interval, len(orig_data))]
+    # pp1i = invert_difference(Dinv, pp2i, 1)
+    pp1i = [i for i in pp2i]
+
+    from math import log
+    from math import exp
+    # invert a boxcox transform for one value
+    def invert_boxcox(value, lam):
+        # log case
+        if lam == 0:
+            return exp(value)
+        # all other cases
+        return exp(log(lam * value + 1) / lam)
+    ans = [invert_boxcox(i, lmbda) for i in pp1i]
+
+    return ans
+
 def pastFiller():
-    cData = pd.read_csv("ALL_Data.csv", index_col=0)
-    model = load_model("model_bd_v1/")
+    import pickle
+    cData = pd.read_csv("../ALL_Data.csv", index_col=0)
+    f = open("model_lr/linearmodel.pkl", "rb")
+    lr = pickle.load(f)
+    f.close()
     from sklearn.metrics import mean_absolute_error
     f = open("power_metrics.csv","w")
     f.write("timestamp,actual,prediction")
@@ -101,8 +157,8 @@ def pastFiller():
     for i in range(60):
         ts = int(cData.index[-(i+1)])
         pDf.loc[ts,"actual"] = cData.loc[ts,"Consumption in Mega Units"]
-
-        pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60-i:len(cData)-i,:].to_numpy().reshape(1,60,1))
+        
+        pData7 = lr.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60-i:len(cData)-i,:].to_numpy().reshape(1,-1))
         pData = round(float(pData7[0]),2)
         pDf.loc[ts+86400, "prediction"] = pData
         buff = pDf.sort_index().dropna()
@@ -166,7 +222,7 @@ os.system(f"cp -rv {DATADIR}/*.txt {TXTDIR}/")
 allTXT = os.listdir(TXTDIR)
 allTXT.sort()
 
-cData = pd.read_csv("ALL_Data.csv", index_col=0)
+cData = pd.read_csv("../ALL_Data.csv", index_col=0)
 
 yrf = "20"+yr
 sDate = f"{dt}/{mn}/{yrf}"
@@ -188,11 +244,14 @@ for i in allTXT:
 WData, WDate = weatherFetch(cTimestamp)
 cData.loc[WDate,list(cData.columns)[1:]] = WData
 cData = cData.dropna()
-cData.to_csv("ALL_Data.csv")
+cData.to_csv("../ALL_Data.csv")
 
 print("Loading model...")
-model = load_model("model_bd_v1")
-pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,60,1))
+import pickle
+f = open("model_lr/linearmodel.pkl", "rb")
+lr = pickle.load(f)
+f.close()
+pData7 = lr.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,-1))
 pData = round(float(pData7[0]),2)
 
 # cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
@@ -223,7 +282,7 @@ f.write(f"{oData},{pData},{cTimestamp},{MAE},{RMSE}")
 f.close()
 
 for i in range(7):
-    pData7 = model.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,60,1))
+    pData7 = lr.predict(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,-1))
     pData = round(float(pData7[0]),2)
     ts = int(cData.index[-1])
     cData.loc[ts+86400, "Consumption in Mega Units"] = pData
