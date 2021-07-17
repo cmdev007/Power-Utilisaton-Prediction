@@ -164,7 +164,7 @@ def powerUpdater(request):
         MAE = mainData[3]
         RMSE = mainData[4]
         # xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
-        for i in power_metrics.index:
+        for i in power_metrics.index[-60:]:
             dateObj = datetime.fromtimestamp(int(i))
             xlabels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
         for i in range(7):
@@ -220,7 +220,7 @@ def powerUpdaterLr(request):
         MAE = mainData[3]
         RMSE = mainData[4]
         # xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
-        for i in power_metrics.index:
+        for i in power_metrics.index[-60:]:
             dateObj = datetime.fromtimestamp(int(i))
             xlabels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
         for i in range(7):
