@@ -25,8 +25,8 @@ def electricitylr(request):
 def electricity(request):
     return render (request, 'electricity.html');
 
-def electricity(request):
-    return render (request, 'electricity.html');
+def electricityV2(request):
+    return render (request, 'electricityV2.html');
 
 def sentiment(request):
     return render (request, 'sentiment.html');
@@ -258,31 +258,32 @@ def powerUpdaterV2(request):
     week_data = []
     week_labels = []
     past_pred = []
+    MAE_all = []
     try:
-        pSeries = pd.read_csv("./backend/power_v2/ALL_Data.csv", index_col = 0)
+        power_metrics = pd.read_csv("./backend/power/prototype_2/power_metrics.csv", index_col = 0)
+        power_metrics = power_metrics.dropna()
+        timeseries = [i for i in power_metrics["actual"]][-60:]
 
-        f = open("./backend/power_v2/prediction.csv")
+        f = open("./backend/power/prototype_2/prediction.csv")
         mainData = f.read()
         f.close()
-        f = open("./backend/power_v2/prediction.csv")
-        week_data = [i for i in pd.read_csv("./backend/power_v2/week_prediction.csv")["predictions"]]
+        week_data = [i for i in pd.read_csv("./backend/power/prototype_2/week_prediction.csv")["predictions"]]
         mainData = mainData.split(",")
         current = mainData[0]
         future = mainData[1]
         cts = mainData[2]
         MAE = mainData[3]
         RMSE = mainData[4]
-        timeseries = [i for i in pSeries["Consumption in Mega Units"]][-60:]
-        for i in list(pSeries.index)[-60:]:
+        # xlabels = [f"{i.split('.')[2]}/{i.split('.')[1]}" for i in pSeries.index]
+        for i in power_metrics.index[-60:]:
             dateObj = datetime.fromtimestamp(int(i))
             xlabels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
         for i in range(7):
             dateObj = datetime.fromtimestamp(int(cts)+((i+2)*86400))
             week_labels.append(f"{str(dateObj.day).zfill(2)}/{str(dateObj.month).zfill(2)}")
 
-        buffPastPred = [i for i in pd.read_csv("./backend/power_v2/power_metrics.csv")["prediction"].dropna()][-59:]
-        past_pred = [0 for i in range(61-len(buffPastPred))]
-        past_pred.extend(buffPastPred)
+        past_pred = [i for i in power_metrics["prediction"]][-60:]
+        MAE_all = [i for i in pd.read_csv("./backend/power/prototype_2/MAE.csv")["MAE"]]
     except:
         pass
     
@@ -296,6 +297,7 @@ def powerUpdaterV2(request):
         "RMSE" : RMSE,
         "week_data" : week_data,
         "week_labels" : week_labels,
-        "past_pred" : past_pred
+        "past_pred" : past_pred,
+        "MAE_all" : MAE_all
     }
     return JsonResponse(context)
