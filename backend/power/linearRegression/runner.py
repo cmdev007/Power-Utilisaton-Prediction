@@ -3,9 +3,9 @@ from urllib.request import urlopen, urlretrieve, Request
 import cgi, os, time, datetime
 import pandas as pd
 import numpy as np
-from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from mechanize import Browser
+import pytz
 
 if time.tzname[-1] == "UTC":
     LAGFLAG = True
@@ -55,7 +55,7 @@ def weatherFetch(ts):
                 'vadodara' : 0.12,
                 'rajkot' : 0.09,
                 'bhavnagar' : 0.04}
-    dObj = datetime.datetime.fromtimestamp(int(ts))
+    dObj = datetime.datetime.fromtimestamp(int(ts),pytz.timezone('Asia/Kolkata'))
     Date = f"{dObj.year}-{dObj.month}-{dObj.day}"
     datetime.datetime.fromtimestamp(ts)
     ans = np.zeros(7)
