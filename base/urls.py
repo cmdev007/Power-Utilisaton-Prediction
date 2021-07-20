@@ -24,5 +24,6 @@ urlpatterns = [
     path('PidCloser',views.PidCloser,name='PidCloser'),
     path('powerUpdaterLr',views.powerUpdaterLr,name='powerUpdaterLr'),
     path('powerUpdater',views.powerUpdater,name='powerUpdater'),
-    path('powerUpdaterV2',views.powerUpdaterV2,name='powerUpdaterV2')
+    path('powerUpdaterV2',views.powerUpdaterV2,name='powerUpdaterV2'),
+    path('power',views.power,name='power')
 ]

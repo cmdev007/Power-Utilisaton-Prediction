@@ -16,6 +16,9 @@ def index(request):
 def home(request):
     return render(request, 'home.html');
 
+def power(request):
+    return render (request, 'power.html');
+
 def about(request):
     return render (request, 'about.html');
 
