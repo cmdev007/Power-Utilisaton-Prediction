@@ -1,3 +1,5 @@
+print("############# Running Prototype 2 Module #############")
+
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, urlretrieve, Request
 import cgi, os, time, datetime
@@ -267,7 +269,7 @@ cData.loc[WDate,list(cData.columns)[1:]] = WData
 cData = cData.dropna()
 # cData.to_csv("ALL_Data.csv")
 
-print("Loading model...")
+print("Loading Prototype 2 model...")
 model = load_model("NewSchoolV1/")
 prepData = this2that(pd.DataFrame(cData["Consumption in Mega Units"]).iloc[-60:,:].to_numpy().reshape(1,-1)[0], True, SScaler, MMScaler, lmbda).reshape(1,60,1)
 pData7 = model.predict(prepData)
@@ -275,7 +277,7 @@ pData = round(float(that2this(np.array(float(pData7[0])).reshape(-1,1), lmbda, S
 
 # cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
 # cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
-print(f"Prediction for tomorrow {pData} MU")
+print(f"Prediction for tomorrow from Prototype 2 {pData} MU")
 
 oData = float(cData["Consumption in Mega Units"].to_numpy()[-1])
 

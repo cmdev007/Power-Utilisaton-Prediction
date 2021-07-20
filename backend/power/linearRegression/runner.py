@@ -1,3 +1,5 @@
+print("############# Running Linear Regression Module #############")
+
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, urlretrieve, Request
 import cgi, os, time, datetime
@@ -253,7 +255,7 @@ cData.loc[WDate,list(cData.columns)[1:]] = WData
 cData = cData.dropna()
 # cData.to_csv("../ALL_Data.csv")
 
-print("Loading model...")
+print("Loading Linear Regression model...")
 import pickle
 f = open("model_lr/linearmodel.pkl", "rb")
 lr = pickle.load(f)
@@ -263,7 +265,7 @@ pData = round(float(pData7[0]),2)
 
 # cDate = finalMU["Date (YY-MM-DD)"].to_numpy()[-1].split(".")
 # cDate = f"{cDate[2]}/{cDate[1]}/20{cDate[0]}"
-print(f"Prediction for tomorrow {pData} MU")
+print(f"Prediction for tomorrow from LR {pData} MU")
 
 oData = float(cData["Consumption in Mega Units"].to_numpy()[-1])
 
