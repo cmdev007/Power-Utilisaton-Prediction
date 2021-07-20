@@ -24,6 +24,19 @@ def latestID(url):
         if "nldc_psp" in i["href"]:
             return link2id(str(i["href"]))
 
+def actioner():
+    os.chdir("linearRegression")
+    os.system("python3.8 runner.py")
+    os.chdir("..")
+
+    os.chdir("prototype_1")
+    os.system("python3.8 runner.py")
+    os.chdir("..")
+
+    os.chdir("prototype_2")
+    os.system("python3.8 runner.py")
+    os.chdir("..")
+
 while(1):
     if "LKEY.txt" in os.listdir():
         try:
@@ -35,11 +48,9 @@ while(1):
             NKEY = latestID("https://posoco.in/reports/daily-reports/daily-reports-2021-22/")
             
             if NKEY>LKEY:
-                os.system("python3.8 linearRegression/runner.py")
-                os.system("python3.8 prototype_1/runner.py")
-                os.system("python3.8 prototype_2/runner.py")
+                actioner()
             time.sleep(7200)
         except:
             time.sleep(15)
     else:
-        time.sleep(10)
+        actioner()
