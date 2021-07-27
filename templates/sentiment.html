@@ -62,6 +62,7 @@
 <body>
     <section class="newsletter-subscribe">
         <div class="container">
+            <br>
             <div class="intro">
                 <h2 class="text-center">Sentiment Analysis</h2>
             </div>
@@ -77,9 +78,8 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-xs-6 col-md-4">
-                </div>
-                <div class="col-xs-6 col-md-4">
+
+                <div class="col" align="center">
                     <form class="d-flex justify-content-center flex-wrap" method="post" action="/PidOpener">
                         {% csrf_token %}
                         <div class="mb-3"><input size=30 type="link" class="form-control" name="link"
@@ -88,13 +88,19 @@
                             </button></div>
                     </form>
                 </div>
-                <div class="col-xs-6 col-md-4">
+            </div>
+            <div class="row">
+
+                <div class="col">
+                <div class="wrapper text-center">
                     <form class="d-flex  flex-wrap" method="post" action="/PidCloser">
                         {% csrf_token %}
                         <div class="mb-3"><button class="btn2 btn-danger" type="submit">Stop</button></div>
                     </form>
                 </div>
+                </div>
             </div>
+
 
 
             <div class="wrapper">
@@ -269,8 +275,6 @@
                 success: doUpdate
             });
         }, 1000);
-
-        
     </script>
 </body>
 {% endblock body %}

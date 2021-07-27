@@ -2,45 +2,57 @@
 {% block title %}Power{% endblock title %}
 
 {% block body %}
-<head><STYLE>.nounderline {
-  text-decoration: none !important
-}</STYLE></head>
+
+<head>
+    <STYLE>
+        .nounderline {
+            text-decoration: none !important
+        }
+    </STYLE>
+</head>
+
 <body style="background-image: url('static/img/bgm4.jpg');   background-repeat: no-repeat; background-size:cover;">
 
-<div class="container px-4 py-5" id="custom-cards">
-    <h2 class="pb-2 border-bottom" style="color:#ffff99">Choose your Module</h2>
+    <div class="container px-4 py-5" id="custom-cards">
+        <h2 class="pb-2 border-bottom" style="color:#ffff99">Choose your Module</h2>
 
-    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-      <div class="col">
-      <a href="/electricitylr" class="nounderline"   >
-        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('static/img/pole1.jpeg');   background-repeat: no-repeat; background-size:cover; border-radius: 5%;"> 
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Linear Regression</h2>
-          </div>
-        </div>
-        </a>
-      </div>
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+            <div class="col">
+                <a href="/electricitylr" class="nounderline">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
+                        style="background-image: url('static/img/pole1.jpeg');   background-repeat: no-repeat; background-size:cover; border-radius: 5%;">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h3 class="pt-5 mt-5 mb-4 lh-1 fw-bold">Linear Regression</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
 
-      <div class="col">
-        <a href="/electricity" class="nounderline"><div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('static/img/pole2.jpeg');  background-repeat: no-repeat; background-size:cover; border-radius: 5%;">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Prototype<br> One</h2>
-          </div>
-       
-        </div>
-         </a>
-      </div>
+            <div class="col">
+                <a href="/electricity" class="nounderline">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
+                        style="background-image: url('static/img/pole2.jpeg');  background-repeat: no-repeat; background-size:cover; border-radius: 5%;">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h3 class="pt-5 mt-5 mb-4  lh-1 fw-bold">Bidirectional Univariate LSTM<br>(Raw Data)</h3>
+                        </div>
 
-      <div class="col">
-        <a href="/electricityV2" class="nounderline" ><div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('static/img/pole3.jpeg');  background-repeat: no-repeat; background-size:cover; border-radius: 5%;">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Prototype<br> Two</h2>
-          </div>
-      
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/electricityV2" class="nounderline">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
+                        style="background-image: url('static/img/pole3.jpeg');  background-repeat: no-repeat; background-size:cover; border-radius: 5%;">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                            <h3 class="pt-5 mt-5 mb-4 lh-1 fw-bold">Bidirectional Univariate LSTM<br>(Processed Data)
+                            </h3>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
         </div>
-          </a>
-      </div>
     </div>
-  </div>
-  </body>
+</body>
 {% endblock body%}
