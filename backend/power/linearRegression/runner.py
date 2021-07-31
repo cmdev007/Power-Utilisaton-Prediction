@@ -62,39 +62,40 @@ def weatherFetch(ts):
     datetime.datetime.fromtimestamp(ts)
     ans = np.zeros(7)
     for city in city_frac:
-        url = f"https://www.worldweatheronline.com/{city}-weather-history/gujarat/in.aspx"
-        
-        brwsr = Browser()
-        brwsr.open(url)
-        brwsr.select_form(name = 'aspnetForm')
-        brwsr['ctl00$MainContentHolder$txtPastDate'] = Date
-        response = brwsr.submit()
-        data = response.read()
-        
-        soup = BeautifulSoup(data,'html.parser')
-        soupD = soup.find_all("input", attrs={"class" : ["form-control"], "id" : ["ctl00_MainContentHolder_txtPastDate"]})[0]
-        soupD = soupD.attrs['value']
-        soupD = int(time.mktime(datetime.datetime.strptime(soupD,"%Y-%m-%d").timetuple()))
-        if LAGFLAG:
-            soupD-=19800
+        stopFleg = True
+        while(stopFleg):
+            try:
+                response = os.popen(f"curl 'https://www.worldweatheronline.com/{city}-weather-history/gujarat/in.aspx' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' --compressed -H 'Content-Type: application/x-www-form-urlencoded' -H 'Referer: https://www.worldweatheronline.com/{city}-weather-history/gujarat/in.aspx' -H 'Origin: https://www.worldweatheronline.com' -H 'DNT: 1' -H 'Upgrade-Insecure-Requests: 1' -H 'Connection: keep-alive' -H 'Cookie: wwoanon=u9_LN8KBmJj7a3LY5Hr1-uAGYs0p3qyY64x2mtOoMSq-ZVTkHxRdx4io5gyL1exaMDVQjKeAxGpSSxkUbXG07sLvfYDGe_Rv_VCr3i_wQr5aKmWsKvRT-rridKE9jXyV2EYb9w2; ASP.NET_SessionId=enknzytps3t0y2ejwdyurzls' --data-raw '__VIEWSTATE=5MP5gO294eP7XQsmos1zPKG8UhQ5S4uX2TQlKzwHE0kLTre%2FshJJPzsUetFj%2BHnLvkaaDekzoBGUrB9U1lmThGSomJ%2FdQqnTKxSzI6EHC7r8O8RJ&__VIEWSTATEGENERATOR=F960AAB1&ctl00%24rblTemp=1&ctl00%24rblPrecip=1&ctl00%24rblWindSpeed=2&ctl00%24rblPressure=1&ctl00%24rblVis=1&ctl00%24rblheight=1&ctl00%24hdlat=23.030&ctl00%24hdlon=72.620&ctl00%24areaid=45528&ctl00%24MainContentHolder%24txtPastDate={Date}&ctl00%24MainContentHolder%24butShowPastWeather=Get+Weather&ctl00%24hdsample='")
 
-        soup = BeautifulSoup(str(soup).split("Historical Weather on")[-1],'html.parser')
+                data = response.read()
+                
+                soup = BeautifulSoup(data,'html.parser')
+                soupD = soup.find_all("input", attrs={"class" : ["form-control"], "id" : ["ctl00_MainContentHolder_txtPastDate"]})[0]
+                soupD = soupD.attrs['value']
+                soupD = int(time.mktime(datetime.datetime.strptime(soupD,"%Y-%m-%d").timetuple()))
+                if LAGFLAG:
+                    soupD-=19800
 
-        buff = ""
-        for link in soup.find_all("div",{"class":["col mr-1", "col mr-1 d-none d-sm-block","col mr-1 d-none d-md-block"]}):
-            buff+=link.text+"\n"
-        extFeat = []
-        for i in buff.split("\n\n")[-1].split("\n")[:-1]:
-            buffC = ""
-            for j in i:
-                try:
-                    float(buffC+j)
-                    buffC+=j
-                except:
-                    break
-            extFeat.append(float(buffC))
-        extFeat = np.array(extFeat)
-        ans+=(extFeat*city_frac[city])
+                soup = BeautifulSoup(str(soup).split("Historical Weather on")[-1],'html.parser')
+
+                buff = ""
+                for link in soup.find_all("div",{"class":["col mr-1", "col mr-1 d-none d-sm-block","col mr-1 d-none d-md-block"]}):
+                    buff+=link.text+"\n"
+                extFeat = []
+                for i in buff.split("\n\n")[-1].split("\n")[:-1]:
+                    buffC = ""
+                    for j in i:
+                        try:
+                            float(buffC+j)
+                            buffC+=j
+                        except:
+                            break
+                    extFeat.append(float(buffC))
+                extFeat = np.array(extFeat)
+                ans+=(extFeat*city_frac[city])
+                stopFleg = False
+            except:
+                print(f"Encountered error in {city}")
     return [i for i in ans], soupD
 
 def this2that(data, test = False, SScaler = None, MMScaler = None, lmbda = None):
